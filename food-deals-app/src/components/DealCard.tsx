@@ -3,6 +3,7 @@ type DealCardProps = {
     restaurant: string;
     price: string;
     cuisine: string
+    imageUrl: string;
 };
 
 export default function DealCard({
@@ -10,9 +11,15 @@ export default function DealCard({
     restaurant,
     price,
     cuisine,
+    imageUrl,
 }: DealCardProps) {
     return (
         <div className="rounded-xl border p-4 shadow-sm">
+            <img
+                src={imageUrl}
+                alt={title}
+                className="h-64 w-full rounded-lg object-cover"
+            />
             <h2 className="text-2xl font-semibold">{title}</h2>
             
             <p className="mt-2 text-gray-600">{restaurant}</p>
