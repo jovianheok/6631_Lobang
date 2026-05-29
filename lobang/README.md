@@ -11,7 +11,59 @@ Personalized food deal aggregation platform.
 
 ## Development
 
-TBD
+Completed 🟢
+1. Frontend ↔ Backend ↔ Database Integration
+    - Next.js frontend connected to FastAPI backend
+    - FastAPI connected to Supabase Postgres
+    - Data can flow from database → backend → frontend
+
+2. Telegram Scraper Foundation
+    - Playwright scraper for https://t.me/s/sgfooddeals
+    - Scrapes public Telegram channel without login
+    - Extracts: post text, post URL, posted timestamp
+    - Generates a content_hash for deduplication
+
+3. Raw Data Pipeline
+    - Defined a raw_posts structure
+    - Separated scraping from normalization
+    - Moved away from directly creating Deal objects
+    - Following the architecture: Scraper → Raw Data → Parser/Normalizer → Canonical Deals
+
+4. Deduplication Foundation
+    - SHA256 content hashing
+    - Prepared for: UNIQUE(source_id, content_hash)
+    - Prevents duplicate Telegram posts from being stored
+
+5. Scraper Project Structure
+    scraper/
+    ├── main.py
+    ├── scrapers/
+    │   └── telegram.py
+    ├── storage.py      (planned/in-progress)
+    ├── db.py           (planned/in-progress)
+    └── models/
+
+
+In-Progress 🟡
+1. Identify food-related posts
+2. Reject irrelevant content
+3. Detect promotions vs announcements
+4. Canonical deals Population
+
+
+Not Started 🔴
+1. Distance scoring
+2. Budget scoring
+3. Cuisine matching
+4. Freshness ranking
+5. Verification Jobs
+6. Expiry checks
+7. Source validation
+8. Status transitions
+9. Realtime Updates
+10. Supabase Realtime subscriptions
+11. Feed refreshes
+
 
 ## Testing
 - Launch backend:
@@ -45,13 +97,6 @@ TBD
 
 8. Finally, HomePage() loops through the deals using deals.map(...), passes each deal's information into a DealCard component, and Next.js renders the completed list of deal cards in the browser for the user to view.
 
-## Flow
-1. Scrape raw posts on telegram channel ✅
-2. Save raw_deals to PostgreSQL database ✅
-3. Parse raw_deals ✅
-4. Save parsed_deals to PostgreSQL database ✅
-5. Add enrichment
-6. Build API for frontend to query deals from database
 
 # Deployment plan
 Frontend on Vercel → calls backend URL → backend on Render → backend reads DATABASE_URL → backend talks to PostgreSQL → backend returns JSON → frontend renders the cards.
