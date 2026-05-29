@@ -14,11 +14,19 @@ Personalized food deal aggregation platform.
 TBD
 
 ## Testing
+- Launch backend:
+    cd apps/backend
+    source .venv/bin/activate
+    uvicorn src.main:app --reload
 
-- to launch backend: inside apps/backend, run "uvicorn src.main:app --reload"
-means: “Run the FastAPI app object named app inside src/main.py, and auto-restart when files change.”
+- Launch frontend:
+    cd apps/frontend
+    npm run dev
 
-- to launch frontend: inside apps/frontend, run "npm run dev"
+- Launch scraper and parser:
+    cd services/scraper
+    source .venv/bin/activate
+    python main.py
 
 ## Frontend-to-Backend
 1. When you start the backend using a command such as uvicorn src.main:app --reload, FastAPI loads main.py, creates the app object, registers all routers, and begins listening for incoming requests on http://127.0.0.1:8000. At this stage, no data has been requested yet—the backend is simply waiting for requests. 
@@ -41,6 +49,19 @@ means: “Run the FastAPI app object named app inside src/main.py, and auto-rest
 1. Scrape raw posts on telegram channel ✅
 2. Save raw_deals to PostgreSQL database ✅
 3. Parse raw_deals ✅
-4. Save parsed_deals to PostgreSQL database
+4. Save parsed_deals to PostgreSQL database ✅
 5. Add enrichment
 6. Build API for frontend to query deals from database
+
+# Deployment plan
+Frontend on Vercel → calls backend URL → backend on Render → backend reads DATABASE_URL → backend talks to PostgreSQL → backend returns JSON → frontend renders the cards.
+
+# Git commit messages
+feat: A new feature for the application or library.
+fix: A patch or bug fix.
+docs: Changes that strictly affect documentation (e.g., README files).
+refactor: Code changes that neither fix a bug nor add a feature.
+test: Adding or correcting tests.
+style: Changes that do not affect the meaning of the code (formatting, white-space, missing semicolons).chore: Updating build processes, auxiliary tools, or dependencies.
+perf: Code changes that improve performance.
+ci: Changes in the continuous integration or deployment setup.
