@@ -4,16 +4,16 @@ from psycopg2.extras import Json                    # Import the Json helper
 
 # Save scraped posts into database
 def save_raw_posts(raw_posts: list[dict], source_id: int):
-
-    # SQL command for each post: 
-#      - Insert a new row into raw_deals, with the columns and placeholders
-#      - ON CONFLICT prevents duplicate inserts
-#      - RETURNING id asks PostgreSQL to give back the ID of the inserted row
-    sql = """INSERT INTO raw_deals (
-        source_id, source_url, raw_text, raw_payload, content_hash, scraped_at)
-    VALUES (%s, %s, %s, %s, %s, now())
-    ON CONFLICT (source_id, content_hash) DO NOTHING
-    RETURNING id;
+    """SQL command for each post: 
+      - Insert a new row into raw_deals, with the columns and placeholders
+      - ON CONFLICT prevents duplicate inserts
+      - RETURNING id asks PostgreSQL to give back the ID of the inserted row
+    """
+    sql = """
+        INSERT INTO raw_deals (source_id, source_url, raw_text, raw_payload, content_hash, scraped_at)
+        VALUES (%s, %s, %s, %s, %s, now())
+        ON CONFLICT (source_id, content_hash) DO NOTHING
+        RETURNING id;
         """
     
     inserted_ids = []                               # If a post is inserted successfully, its database ID is added to this list
@@ -32,14 +32,49 @@ def save_raw_posts(raw_posts: list[dict], source_id: int):
                                 post["source_url"],
                                 post["text"],
                                 Json(post),         # Converts each Python dictionary into valid JSON text to store
-                                post["content_hash"],),
+                                post["content_hash"],
+                                ),
                     )         
-                    row = cur.fetchone()
+                    row = cur.fetchone()            # Fetch the returned row
                     if row:
-                        inserted_ids.append(row[0]) # Fetch the returned row
+                        inserted_ids.append(row[0]) # Get the row id and insert into inserted_ids
         return inserted_ids
     
     finally:
         conn.close
 
-def save_parsed_deals
+# Save parsed deals into database
+def save_parsed_deals(parsed_deals: list[dict], source_id: int):
+    sql = """
+        INSERT INTO deals (raw_deal_id, source_id, content_hash, title, description, merchant_name, source_url)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT (source_id, content_hash) DO NOTHING
+        RETURNING id;
+        """
+    
+    inserted_ids = []
+    conn = get_conn()
+
+    try:
+        with conn:
+            with conn.cursor() as cur:
+                for deal in parsed_deals:
+                    cur.execute(sql,
+                                (deal.get("raw_deal_id"),
+                                 source_id,
+                                 deal.get("content_hash"),
+                                 deal.get("title"),
+                                 deal.get("description"),
+                                 deal.get("merchant_name"),
+                                 deal.get("source_url"),
+                                 ),
+                    )
+                    row = cur.fetchone()
+                    if row:
+                        inserted_ids.append(row[0])
+
+        return inserted_ids
+    
+    finally:
+        conn.close()
+

@@ -9,6 +9,7 @@ def parse_raw_post(raw_post: dict) -> dict:
     text = raw_post.get("text", "").strip()     # Get the "text" field and remove whitespace at the start and end
     lines = [line.strip() for line in text.splitlines() if line.strip()]    # Split text into lines. Trim whitespace
 #                                                                             Remove empty lines
+
     title = lines[0][:100] if lines else ""     # Take the first line and limit it to 100 characters
     merchant_name = extract_merchant_name(text, title)
 
@@ -24,20 +25,20 @@ def parse_raw_post(raw_post: dict) -> dict:
 def extract_merchant_name(text: str, fallback_title: str) -> str:
     candidate = fallback_title.strip()
     
-    candidate = re.sub(                     # Syntax: re.sub(pattern, replacement, text)
+    candidate = re.sub(                         # Syntax: re.sub(pattern, replacement, text)
         r"\b(promo|promotion|deal|offers?|discount|sale|limited time)\b",
         "",
         candidate,
         flags=re.IGNORECASE,
     )
     candidate = re.sub(
-        r"[^\w&'’().,-]+",                  # Replace characters that are NOT \w&'’().,-]+
+        r"[^\w&'’().,-]+",                      # Replace characters that are NOT \w&'’().,-]+
         " ",
         candidate).strip()
     
     candidate = re.sub(
-        r"\s{2,}",                          # Replace two or more whitespaces
+        r"\s{2,}",                              # Replace two or more whitespaces
         " ", 
         candidate).strip()
     
-    return candidate or fallback_title[:100] # Return candidate if it is not empty else fallback_title
+    return candidate or fallback_title[:100]    # Return candidate if it is not empty else fallback_title

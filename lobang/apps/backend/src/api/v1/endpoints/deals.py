@@ -1,12 +1,33 @@
-# Receives HTTP requests -> calls the service -> returns response
+"""
+API routes for deals endpoints.
+"""
 
-from fastapi import APIRouter                           # Imports FastAPI’s router helper.
-from src.schemas.deal import DealOut                    # Imports the response schema.
-from src.services.deal_service import get_mock_deals    # Imports the function that provides the data.
+# FastAPI router for grouping related endpoints
+from fastapi import APIRouter
 
+# Pydantic response schema/model
+# Defines the shape of returned deal data
+from src.schemas.deal import DealOut
+
+# Service function that retrieves deals from database
+from src.services.deal_service import get_deals
+
+# Create API router instance
 router = APIRouter() 
 
 
-@router.get("/deals", response_model=list[DealOut])     # Tells FastAPI if someone visits GET /deals, run list_deals()
+@router.get("/deals", response_model=list[DealOut])
 def list_deals():
-    return get_mock_deals()
+    """
+    GET /deals
+
+    Returns a list of deals.
+
+    response_model:
+    - Ensures returned data matches DealOut schema
+    - Automatically generates API documentation
+    - Validates response structure
+    """
+
+    # Fetch and return deals from service layer
+    return get_deals()

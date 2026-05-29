@@ -1,19 +1,25 @@
 from scrapers.telegram import scrape_telegram_channel
-from db.storage import save_raw_posts
 from parsers.deal_parser import parse_raw_post
+from db.storage import save_raw_posts, save_parsed_deals
 
+""" to run main():
+    -> cd into lobang/services/scraper
+    -> source .venv/bin/activate
+    -> python main.py
+
+"""
 def main():
     try:
-        raw_posts = scrape_telegram_channel()                   # Scrape telegram channel
+        raw_posts = scrape_telegram_channel()                                       # Scrape telegram channel
         print(f"Scraped {len(raw_posts)} posts")
 
-        inserted_ids = save_raw_posts(raw_posts, source_id=1)   # Save raw posts to database
-        print(f"Inserted {len(inserted_ids)} new raw posts")
+        inserted_raw_post_ids = save_raw_posts(raw_posts, source_id=1)              # Save raw posts to database
+        print(f"Inserted {len(inserted_raw_post_ids)} new raw posts")
 
-        parsed_deals = [parse_raw_post(post) for post in raw_posts] # Parse raw posts
-        print("Sample parsed deals:")
-        for deal in parsed_deals[:5]:
-            print(deal)
+        parsed_deals = [parse_raw_post(post) for post in raw_posts]                 # Parse raw posts
+        
+        inserted_parsed_deal_ids = save_parsed_deals(parsed_deals, source_id=1)    # Save parsed deals to database
+        print(f"Inserted {len(inserted_parsed_deal_ids)} parsed deals")
 
     except Exception as e:
         print("Pipeline failed: ")
