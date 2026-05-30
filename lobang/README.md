@@ -1,13 +1,60 @@
 # Lobang
 
-Personalized food deal aggregation platform.
+Lobang is a personalized food-deal discovery app.
+
+It pulls promotions from sources like Telegram channels and restaurant pages, turns messy posts into structured deals, removes duplicates, and shows users a ranked feed of the most relevant offers. The app is designed to keep stale or expired deals out of the main feed, so users mostly see current, useful promotions.
+
+What it does:
+
+- Collects deals from external sources using a Python/Playwright scraper.
+- Stores raw posts first in the database so nothing is lost.
+- Parses raw text into structured deal data like merchant, title, price, location, expiry, and deal type.
+- Filters for food-related deals only so irrelevant posts do not clutter the feed.
+- Deduplicates repeated promotions so the same deal is not shown multiple times.
+- Ranks deals by relevance using factors like distance, budget, cuisine preference, freshness, timing, and eligibility.
+- Shows deal cards in the frontend with richer information and explanation badges.
+- Supports bookmarks, history, and user preferences so the feed can be personalized.
+- Verifies and expires deals over time so outdated offers get removed or marked inactive.
+
 
 ## Stack
 
-- Next.js
-- FastAPI
-- Supabase
-- Playwright
+Frontend
+- Next.js (TypeScript) — User-facing web application
+- TailwindCSS + Shadcn/UI — UI components and styling
+- Hosted on Vercel — Automatic deployments from GitHub
+
+Backend
+- FastAPI (Python) — REST API, business logic, ranking, filtering
+- Hosted on Railway / Render / Fly.io (choose one) — Runs API services and background jobs
+
+Database
+- Supabase Postgres — Primary database and source of truth
+- Stores: Raw scraped posts (raw_deals), Canonical deals (deals), User profiles, Bookmarks, Search history, Verification logs, Authentication, Supabase Auth,
+- Handles: User signup/login, Session management, JWT authentication
+
+Scraping & Ingestion
+- Python + Playwright
+- Scrapes: Telegram channels (currently sgfooddeals), Future restaurant websites and social sources, Produces raw deal records for processing, Parsing & Normalization, Custom Python Parser
+- Converts unstructured Telegram posts into structured deal data: Merchant, Price, Discount, Location,Expiry, Deal type
+
+Search & Ranking
+- PostgreSQL Full-Text Search
+- FastAPI Ranking Engine
+- Personalizes deal ordering based on: Distance, Budget, Cuisine preferences, Freshness, Availability
+
+Scheduling & Automation
+- Supabase Cron
+- Runs: Scraping jobs, Parsing jobs, Verification checks, Expiry updates
+
+Realtime Updates
+- Supabase Realtime
+- Pushes: New deals, Deal updates, Verification changes, Bookmark updates
+
+File Storage
+- Supabase Storage
+- Future use: Deal screenshots, Merchant images, Community uploads
+
 
 ## Development
 
@@ -80,6 +127,7 @@ Not Started 🔴
     source .venv/bin/activate
     python main.py
 
+
 ## Frontend-to-Backend
 1. When you start the backend using a command such as uvicorn src.main:app --reload, FastAPI loads main.py, creates the app object, registers all routers, and begins listening for incoming requests on http://127.0.0.1:8000. At this stage, no data has been requested yet—the backend is simply waiting for requests. 
 
@@ -100,6 +148,7 @@ Not Started 🔴
 
 # Deployment plan
 Frontend on Vercel → calls backend URL → backend on Render → backend reads DATABASE_URL → backend talks to PostgreSQL → backend returns JSON → frontend renders the cards.
+
 
 # Git commit messages
 feat: A new feature for the application or library.
