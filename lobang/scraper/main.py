@@ -7,6 +7,7 @@ from db.storage import save_raw_posts, save_parsed_deals
     -> source .venv/bin/activate
     -> python main.py
 
+    
 """
 def main():
     try:
