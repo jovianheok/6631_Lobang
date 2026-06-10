@@ -1,35 +1,17 @@
 """
-Main FastAPI application entry point.
+Purpose: Create the FastAPI application and register all routers/endpoints so the backend can receive and handle HTTP requests
 """
+from fastapi import FastAPI     # for FastAPI framework
+from src.routes.deal_routes  import deal_router
 
-# Import FastAPI framework
-from fastapi import FastAPI
+app = FastAPI(title="Lobang API")       # Create a FastAPI application
 
-# Import versioned API router
-from src.api.v1.router import api_router
+@app.get("/")
+def root():
+    return {"message": "Lobang API is running"}
 
-
-# Create FastAPI application instance
-# 'title' appears in Swagger/OpenAPI documentation
-app = FastAPI(title="Lobang API")
-
-
-@app.get("/health")
+@app.get("/health")     # Health-check endpoint
 def health_check():
-    """
-    Health check endpoint.
+    return {"status": "ok"}     # API heakth response
 
-    Used to verify that the API server is running.
-    Commonly used by:
-    - monitoring systems
-    - Docker/Kubernetes health checks
-    - load balancers
-    """
-
-    # Simple JSON response
-    return {"status": "ok"}
-
-
-# Register API routes under versioned prefix
-# Example: /api/v1/deals
-app.include_router(api_router, prefix="/api/v1")
+app.include_router(deal_router)     # Register deal endpoints
