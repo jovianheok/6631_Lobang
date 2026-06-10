@@ -1,11 +1,13 @@
+"""
+Purpose: Create the FastAPI application and register all routers/endpoints so the backend can receive and handle HTTP requests
+"""
+from fastapi import FastAPI     # for FastAPI framework
+from src.routes.deal_routes  import deal_router
 
-from fastapi import FastAPI
-from src.deals import router as deals_router
+app = FastAPI(title="Lobang API")       # Create a FastAPI application
 
-app = FastAPI(title="Lobang API")
-
-@app.get("/health")
+@app.get("/health")     # Health-check endpoint
 def health_check():
-    return {"status": "ok"}
+    return {"status": "ok"}     # API heakth response
 
-app.include_router(deals_router)
+app.include_router(deal_router)     # Register deal endpoints
