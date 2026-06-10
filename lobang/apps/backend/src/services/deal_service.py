@@ -6,7 +6,7 @@ import os
 from typing import Any      # type hints for better readability and autocomplete support
 import psycopg2
 from dotenv import load_dotenv
-from database.connection import get_conn
+from src.database.connection import get_conn
 
 load_dotenv()
 

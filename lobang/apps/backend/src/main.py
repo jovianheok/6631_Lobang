@@ -6,6 +6,10 @@ from src.routes.deal_routes  import deal_router
 
 app = FastAPI(title="Lobang API")       # Create a FastAPI application
 
+@app.get("/")
+def root():
+    return {"message": "Lobang API is running"}
+
 @app.get("/health")     # Health-check endpoint
 def health_check():
     return {"status": "ok"}     # API heakth response
