@@ -1,3 +1,7 @@
+"""
+Purpose: Clean text from scraper, determine if it is a food deal, extract structured information
+"""
+
 from __future__ import annotations
 # Allows type hints to be evaluated lazily as strings.
 # This improves compatibility with forward references and reduces import issues.

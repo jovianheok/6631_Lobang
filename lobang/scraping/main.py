@@ -1,14 +1,11 @@
+"""
+Purpose: Coordinate the pipeline: scrape -> store -> parse -> store
+"""
+
 from scrapers.telegram import scrape_telegram_channel
 from parsers.deal_parser import parse_raw_post
-from db.storage import save_raw_posts, save_parsed_deals
+from database.storage import save_raw_posts, save_parsed_deals
 
-""" to run main():
-    -> cd into lobang/services/scraper
-    -> source .venv/bin/activate
-    -> python main.py
-
-    
-"""
 def main():
     try:
         raw_posts = scrape_telegram_channel()                                       # Scrape telegram channel
