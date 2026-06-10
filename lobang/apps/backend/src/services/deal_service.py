@@ -1,56 +1,23 @@
 """
-Database utility functions for retrieving deals data
-from a PostgreSQL database.
+Purpose: Query the database and prepare data
 """
 
-# Access environment variables (DATABASE_URL)
 import os
-
-# Type hints for better readability and autocomplete support
-from typing import Any
-
-# PostgreSQL database adapter for Python
+from typing import Any      # type hints for better readability and autocomplete support
 import psycopg2
-
-# Loads variables from .env file into environment
 from dotenv import load_dotenv
+from database.connection import get_conn
 
-# Load environment variables from .env file
 load_dotenv()
-
-def get_conn():
-    """
-    Create and return a PostgreSQL database connection.
-
-    DATABASE_URL is read from environment variables.
-    """
-    url = os.getenv("DATABASE_URL", "").strip()
-    print("DATABASE_URL repr =", repr(url))
-    
-    return psycopg2.connect(os.environ["DATABASE_URL"])
-
 
 def get_deals() -> list[dict[str, Any]]:
     """
-    Fetch the latest 50 deals from the database.
-
-    Returns:
-        A list of dictionaries whose key is string and value is Any
+    Purpose: Retrieve deal data from the database and convert to Python objects
     """
-
-    # Open database connection
     conn = get_conn()
 
     try:
-
-        # Create database cursor to execute SQL queries
         with conn.cursor() as cur:
-
-            # Execute SQL query and retrieve latest deals ordered by creation time
-                # SELECT: chooses which column to return
-                # FROM: from which table
-                # ORDER: sorts results; DESC: descending order
-                # LIMIT: only returns the first 50 rows after sorting
             cur.execute(
                 """
                 SELECT
@@ -68,15 +35,12 @@ def get_deals() -> list[dict[str, Any]]:
                 """
             )
 
-            # Fetch all query results
-            rows = cur.fetchall()
+            rows = cur.fetchall()       # Fetch all query results
 
-            # Store processed deals as a list of dictionaries
-            deals: list[dict[str, Any]] = []
+            deals: list[dict[str, Any]] = []        # Store processed deals as a list of dictionaries
 
-            # Convert each database row into a dictionary
             for row in rows:
-                deals.append(
+                deals.append(       # Convert each database row into a dictionary
                     {
                         "id": row[0],
                         "title": row[1],
