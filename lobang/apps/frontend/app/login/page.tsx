@@ -1,4 +1,8 @@
-"use client";
+// Login and sign up page. Trackers whether the user is in "login" or "signup" mode. On Login,
+// sign in via Supabase and redirects to homepage, else creates account and TODO: have 
+// email verification
+
+"use client"; // Uses interactivity (useState, form), so it runs in the browser
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -13,6 +17,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [signedUp, setSignedUp] = useState(false);
   const router = useRouter();
+
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
