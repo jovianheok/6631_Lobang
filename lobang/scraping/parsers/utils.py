@@ -19,9 +19,10 @@ def clean_line(value: str) -> str:
     """
     Purpose: Clean extracted values such as titles, merchant names, locations, and dates
     """
-    value = re.sub(r"\s+", " ", (value or "").strip())
-    value = value.strip(" -–—:|•·,")
-    return value
+    value = re.sub(r"\s+", " ", (value or "").strip())      # value = title or "", then remove whitespace, then replace any spaces, tabs, newlines with a single space
+    value = value.strip(" -–—:|•·,\t")      # remove punctuation from the ends
+    return value.strip()        # remove any leading and trailing whitespace
+
 
 def extract_first_match(text: str, patterns: list[str],) -> Optional[str]:
     """

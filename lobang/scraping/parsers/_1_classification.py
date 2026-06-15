@@ -47,6 +47,7 @@ def contains_deal_signal(text: str) -> bool:
     """
     return count_pattern_hits(text, DEAL_PATTERNS) >= 1
 
+
 def contains_negative_signal(text: str) -> bool:
     """
     Return True if the post contains at least one negative signal

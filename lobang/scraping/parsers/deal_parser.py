@@ -13,14 +13,32 @@ def parse_raw_post(raw_post: dict) -> Optional[dict]:
     if not text:
         return None
 
+    # 1. Check if it is a food deal
     if not is_food_deal(text):
         return None
+    
+    # Remove surrounding whitespace from each line in text and discard blank lines
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
 
+    # 2. Extract title
     title = extract_title(lines, text)
+
+    # 3. Extract merchant name
     merchant_name = extract_merchant_name(text, title)
+
+    # 4. Extract discount info
     # discount = extract_discount(text)
+
+    # 5. Extract location
     # location = extract_location(text)
+
+    # 6. Extract price range
+    # 7. Extract cuisine
+    # 8. Extract expiry
     # expiry = extract_expiry(text)
+    
+    # 9. 
+    
 
     return {
         "title": title,
