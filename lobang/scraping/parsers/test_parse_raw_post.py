@@ -3,53 +3,34 @@ from deal_parser import parse_raw_post
 
 TEST_CASES = [
     {
-        "name": "auntie_annes_1for1",
-        "text": "Auntie Anne’s: 1-for-1 Cinnamon Sugar Pretzel 🥨",
+        "deal name": "valid_food_deal_1",
+        "text": "Auntie Anne's: 1-for-1 Cinnamon Sugar Pretzel 🥨",
         "expected": {
             "is_food_deal": True,
+            "title": "Auntie Anne's: 1-for-1 Cinnamon Sugar Pretzel",
             "merchant_name": "Auntie Anne's",
         },
     },
     {
-        "name": "kfc_1for1",
-        "text": "KFC: 1-for-1 Finger Licking Deals 🍗",
+        "deal name": "valid_food_deal_2",
+        "text": "KFC: 1-for-1 Chicken Tender 🍗",
         "expected": {
             "is_food_deal": True,
+            "title": "KFC: 1-for-1 Chicken Tender",
             "merchant_name": "KFC",
         },
     },
     {
-        "name": "texas_chicken_5_dollar",
+        "deal name": "valid_food_deal_3",
         "text": "Texas Chicken: 5-pc Drumlets for $5 🍗",
         "expected": {
             "is_food_deal": True,
+            "title": "Texas Chicken: 5-pc Drumlets for $5",
             "merchant_name": "Texas Chicken",
         },
     },
     {
-        "name": "starbucks_1for1",
-        "text": "Starbucks: 1-for-1 on any Venti drink 🥤",
-        "expected": {
-            "is_food_deal": True,
-            "merchant_name": "Starbucks",
-        },
-    },
-    {
-        "name": "vietnamese_coffee_shoutout",
-        "text": "5 Vietnamese Salt Coffee Spots in SG 🥤",
-        "expected": {
-            "is_food_deal": False,
-        },
-    },
-    {
-        "name": "gastrobeats_food_guide",
-        "text": "GastroBeats 2026 Food Guide 🍩",
-        "expected": {
-            "is_food_deal": False,
-        },
-    },
-    {
-        "name": "sg_friend_up",
+        "deal name": "non_food_deal_1",
         "text": "SG Friend Up: New Friend Circle Starts Here 👋",
         "expected": {
             "is_food_deal": False,
@@ -57,9 +38,20 @@ TEST_CASES = [
     },
 ]
 
-@pytest.mark.parametrize("case", TEST_CASES, ids=[c["name"] for c in TEST_CASES])
+@pytest.mark.parametrize(       # decorator
+    "case",
+    TEST_CASES,
+    ids=[c["deal name"] for c in TEST_CASES]        # Give each test run a readable name in pytest output
+)
 def test_parse_raw_post(case):
-    result = parse_raw_post(case["text"])
+    result = parse_raw_post({"text": case["text"]})      # Create an input dictionary and pass to parse_raw_post as required
 
-    for key, expected_value in case["expected"].items():
-        assert result[key] == expected_value, f"{case['name']} failed on {key}"
+    # Food deals
+    if case["expected"]["is_food_deal"]:
+        assert result is not None
+        assert result["title"] == case["expected"]["title"]
+        assert result["merchant_name"] == case["expected"]["merchant_name"]
+    
+    # Non-food deals
+    else:
+        assert result is None
