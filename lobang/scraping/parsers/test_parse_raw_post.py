@@ -1,3 +1,6 @@
+import pytest
+from deal_parser import parse_raw_post
+
 TEST_CASES = [
     {
         "name": "auntie_annes_1for1",
@@ -31,9 +34,6 @@ TEST_CASES = [
             "merchant_name": "Starbucks",
         },
     },
-
-    # NON-DEALS
-
     {
         "name": "vietnamese_coffee_shoutout",
         "text": "5 Vietnamese Salt Coffee Spots in SG 🥤",
@@ -56,3 +56,10 @@ TEST_CASES = [
         },
     },
 ]
+
+@pytest.mark.parametrize("case", TEST_CASES, ids=[c["name"] for c in TEST_CASES])
+def test_parse_raw_post(case):
+    result = parse_raw_post(case["text"])
+
+    for key, expected_value in case["expected"].items():
+        assert result[key] == expected_value, f"{case['name']} failed on {key}"

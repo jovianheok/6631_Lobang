@@ -36,9 +36,7 @@ def parse_raw_post(raw_post: dict) -> Optional[dict]:
     # 7. Extract cuisine
     # 8. Extract expiry
     # expiry = extract_expiry(text)
-    
-    # 9. 
-    
+
 
     return {
         "title": title,

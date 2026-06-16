@@ -122,13 +122,13 @@ NEGATIVE_PATTERNS = [
 ]
 
 # List of regular expression patterns to extract prices and discounts
-PRICE_PATTERNS = 
+# PRICE_PATTERNS = 
 
 # List of regular expression patterns to extract dates, validity and expiry
-DATE_PATTERNS = 
+# DATE_PATTERNS = 
 
 # List of regular expression patterns to extract location
-LOCATION_PATTERNS = 
+# LOCATION_PATTERNS = 
 
 # Set of generic promotional words that should not be treated as merchant names during extraction
 MERCHANT_STOPWORDS = {
