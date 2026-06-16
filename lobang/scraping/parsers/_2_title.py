@@ -8,6 +8,7 @@ from utils import clean_line
 
 def clean_title(title: str) -> str:
     title = clean_line(title)
+    title = re.sub(r"[\U0001F300-\U0001FAFF\U00002700-\U000027BF]+", "", title)     # Remove emojis
     title = re.sub(r"^\[[^\]]+\]\s*", "", title)        # Remove leading bracketed tags
     return title.strip()
 
