@@ -2,16 +2,17 @@
 Purpose: Store all regex patterns in one place so the parser logic stays clean
 """
 
+r"""
+r"..."  : raw string literal
+\b      : word boundary
+\d      : a digit
+\d+     : one or more digits
+\s      : a whitespace character
+\s?     : zero or one whitespace character
+\s*     : zero or more whitespace characters
+[ -]?   : an optional space or hyphen
 """
-    r"": raw string
-    \b...\b: word boundary
-    \d: a digit
-    \d+: one or more digits
-    \s: any whitespace character
-    \s: zero or 1 whitespace character
-    \s*: zero or more whitespace characters
-    [ -]?: either a space or a hyphen
-"""
+
 # List of regular expression patterns to identify food-related terms.
 FOOD_PATTERNS = [
     # Generic food terms
@@ -44,6 +45,7 @@ FOOD_PATTERNS = [
     r"\bdessert(s)?\b",
     r"\bcake\b",
     r"\bcookie(s)?\b",
+    r"\bchicken\b",
 
     # Food venues
     r"\bcafe\b",
