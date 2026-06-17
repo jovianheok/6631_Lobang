@@ -5,7 +5,6 @@ from .testcases import TEST_CASES
 @pytest.mark.parametrize(       # decorator
     "case",
     TEST_CASES,
-    ids=[c["deal name"] for c in TEST_CASES]        # Give each test run a readable name in pytest output
 )
 def test_parse_raw_post(case):
     result = parse_raw_post({"text": case["text"]})      # Create an input dictionary and pass to parse_raw_post as required
