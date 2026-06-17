@@ -5,8 +5,8 @@ Purpose: Extract, clean, and validate merchant names from Telegram posts using d
 import re
 from typing import Optional
 
-from patterns import MERCHANT_STOPWORDS
-from utils import clean_line
+from .patterns import MERCHANT_STOPWORDS
+from .utils import clean_line
 
 def extract_merchant_name(text: str, title: str) -> Optional[str]:
     """
