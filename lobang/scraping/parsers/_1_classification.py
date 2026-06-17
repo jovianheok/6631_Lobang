@@ -3,9 +3,9 @@ Purpose: Determine whether a Telegram post should be classified as a food deal b
 """
 
 import re
-from patterns import (
+from .patterns import (
     FOOD_PATTERNS,
-    DEAL_PATTERNS,
+    STRONG_DEAL_PATTERNS,
     NEGATIVE_PATTERNS,
 )
 
@@ -13,15 +13,13 @@ def is_food_deal(text:str) -> bool:
     """
     Purpose: Determine whether a Telegram post should be accepted as a valid food deal based on its food, deal, and negative signals
     """
-    food_score = count_pattern_hits(text, FOOD_PATTERNS)
-    deal_score = count_pattern_hits(text, DEAL_PATTERNS)
-    negative_score = count_pattern_hits(text, NEGATIVE_PATTERNS)
+    if contains_negative_signal(text):
+        return False
 
-    return (
-        food_score >= 1
-        and deal_score >= 1
-        and negative_score == 0
-    )
+    has_food = contains_food_signal(text)
+    has_strong_offer = contains_strong_offer_signal(text)
+
+    return has_food and has_strong_offer
 
 
 def count_pattern_hits(text: str, patterns: list[str]) -> int:
@@ -41,11 +39,11 @@ def contains_food_signal(text: str) -> bool:
     return count_pattern_hits(text, FOOD_PATTERNS) >= 1
 
 
-def contains_deal_signal(text: str) -> bool:
+def contains_strong_offer_signal(text: str) -> bool:
     """
     Return True if the post contains at least one deal signal
     """
-    return count_pattern_hits(text, DEAL_PATTERNS) >= 1
+    return count_pattern_hits(text, STRONG_DEAL_PATTERNS) >= 1
 
 
 def contains_negative_signal(text: str) -> bool:
