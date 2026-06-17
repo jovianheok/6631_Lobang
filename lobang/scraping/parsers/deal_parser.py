@@ -3,10 +3,12 @@ Purpose: Serve as the main parser entry point that orchestrates classification a
 """
 from typing import Optional
 
-from utils import normalize_text
-from _1_classification import is_food_deal
-from _2_title import extract_title
-from _3_merchant import extract_merchant_name
+from .utils import normalize_text
+from ._1_classification import is_food_deal
+from ._2_title import extract_title
+from ._3_merchant import extract_merchant_name
+from ._4_expiry import extract_expiry
+
 
 def parse_raw_post(raw_post: dict) -> Optional[dict]:
     text = normalize_text(raw_post.get("text", ""))
@@ -26,19 +28,18 @@ def parse_raw_post(raw_post: dict) -> Optional[dict]:
     # 3. Extract merchant name
     merchant_name = extract_merchant_name(text, title)
 
-    # 4. Extract discount info
-    # discount = extract_discount(text)
+    # 4. Extract expiry
+    expiry = extract_expiry(text)
 
     # 5. Extract location
     # location = extract_location(text)
 
     # 6. Extract price range
     # 7. Extract cuisine
-    # 8. Extract expiry
-    # expiry = extract_expiry(text)
 
 
     return {
         "title": title,
         "merchant_name": merchant_name,
+        "expiry": expiry,
     }
