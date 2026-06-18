@@ -19,7 +19,7 @@ def save_raw_posts(raw_posts: list[dict], source_id: int):
         with conn:
             with conn.cursor() as cur:      # Create a cursor to run SQL commands
                 for post in raw_posts:
-                    cur.execute(INSERT_RAW_POST
+                    cur.execute(INSERT_RAW_POST,
                                 (source_id,
                                 post["source_url"],
                                 post["text"],
@@ -33,7 +33,7 @@ def save_raw_posts(raw_posts: list[dict], source_id: int):
         return inserted_ids
     
     finally:
-        conn.close
+        conn.close()
 
 
 def save_parsed_deals(parsed_deals: list[dict], source_id: int):
