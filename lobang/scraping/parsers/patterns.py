@@ -16,7 +16,7 @@ r"..."  : raw string literal
 $       : matches the end of the string (trailing)
 """
 
-# List of regular expression patterns to identify food-related terms.
+# _1_classification.py
 FOOD_PATTERNS = [
     # Generic food terms
     r"\bfood\b", r"\bmeal(s)?\b", r"\blunch\b", r"\bdinner\b", r"\bbreakfast\b", r"\bbuffet\b", r"\bdining\b",
@@ -25,22 +25,27 @@ FOOD_PATTERNS = [
     r"\bcoffee\b", r"\btea\b", r"\bboba\b", r"\bbubble tea\b", r"\bdrink(s)?\b", r"\bfrappuccino(s)?\b", r"\brefreshers?\b",
 
     # Protein / mains
-    # Proteins / mains
     r"\bchicken\b", r"\bbeef\b", r"\bpork\b", r"\bfish\b", r"\bseafood\b", r"\bburger(s)?\b", r"\bpizza(s)?\b", r"\bramen\b",
     r"\bsushi\b", r"\bnoodle(s)?\b", r"\bprawn(s)?\b", r"\bwing(s)?\b",
 
-    # Desserts
+    # Desserts and snacks
     r"\bgelato\b", r"\bice cream\b", r"\bdessert(s)?\b", r"\bcake\b", r"\bcookie(s)?\b", r"\bdonut(s)?\b", r"\bmochi\b",
-    r"\bkakigori\b", r"\bmatcha\b",
+    r"\bkakigori\b", r"\bmatcha\b", r"\bsnack(s)?\b", r"\bchips?\b", r"\bcrisps?\b", r"\bpopcorn\b",
 
     # Broad restaurant menu categories
     r"\bbowl(s)?\b", r"\bcombo(s)?\b", r"\bset(s)?\b", r"\bplatter(s)?\b",
 
     # Food venues
     r"\bcafe\b", r"\bcafé\b", r"\brestaurant\b", r"\bbakery\b", r"\bhawker\b", r"\bkopitiam\b",
+
+    # Convenience store
+    r"\bready[- ]to[- ]go\b", r"\bready[- ]to[- ]eat\b", r"\bhotdog(s)?\b", r"\bsandwich(es)?\b", r"\bwrap(s)?\b", r"\bonigiri\b",
+    r"\brice ball(s)?\b", r"\bbento\b", r"\bmeal box(es)?\b", 
+    
+    # Bakery
+    r"\bbun(s)?\b", r"\bpastr(y|ies)\b", r"\bcroissant(s)?\b", r"\bmuffin(s)?\b",
 ]
 
-# List of regular expression patterns to identify promotions and discounts
 STRONG_DEAL_PATTERNS = [
     # 1-for-1 / BOGO
     r"\b1\s*[- ]?\s*for\s*[- ]?\s*1\b", r"\bbuy\s*1\s*get\s*1\b", r"\bbuy\s*1\s*free\s*1\b", r"\bb1f1\b",
@@ -64,7 +69,6 @@ STRONG_DEAL_PATTERNS = [
     r"\bwhile stocks? last\b", r"\bU\.P\.\s*\$?\d+(?:\.\d{1,2})?\b",
 ]
 
-# List of regular expression patterns to identify non-deal content
 NEGATIVE_PATTERNS = [
     # Channel labels
     r"#shoutout\b", r"#article\b",
@@ -82,8 +86,20 @@ NEGATIVE_PATTERNS = [
     r"\bgiveaway\b", r"\bcontest\b", r"\blucky winner(s)?\b", r"\bwin\b", r"\bstand to win\b",
 ]
 
-# List of regular expression patterns to extract prices and discounts
-# PRICE_PATTERNS = 
+# _3_merchant.py
+GENERIC_PROMO_WORDS = {
+    "promo", "promotion", "deal", "deals", "offer", "offers", "discount", "sale", "limited", "time", "new", "best", "food", "finds",
+}
+
+AT_PATTERNS = [
+    r"\bback at\s+([A-Za-z0-9&'\- ]+)", r"\bavailable at\s+([A-Za-z0-9&'\- ]+)", r"\bonly at\s+([A-Za-z0-9&'\- ]+)",
+    r"\bexclusively at\s+([A-Za-z0-9&'\- ]+)",
+]
+
+NON_MERCHANT_LOCATION_PHRASES = {
+    "all outlets", "selected outlets", "participating outlets", "all stores",
+    "selected stores", "participating stores", "all locations",
+}
 
 # List of regular expression patterns to extract dates, validity and expiry
 # DATE_PATTERNS = 
@@ -92,6 +108,5 @@ NEGATIVE_PATTERNS = [
 # LOCATION_PATTERNS = 
 
 # Set of generic promotional words that should not be treated as merchant names during extraction
-MERCHANT_STOPWORDS = {
-    "promo", "promotion", "deal", "deals", "offer", "offers", "discount", "sale", "limited", "time", "new", "best", "food", "finds",
-}
+
+# 
