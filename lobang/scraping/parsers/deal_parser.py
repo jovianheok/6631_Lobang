@@ -5,9 +5,9 @@ from typing import Optional
 
 from .utils import normalize_text
 from ._1_classification import is_food_deal
-from ._2_title import extract_title
-from ._3_merchant import extract_merchant_name
-from ._4_expiry import extract_expiry
+from ._2_extract_title import extract_title
+from ._3_extract_merchant import extract_merchant_name
+from ._4_extract_expiry import extract_expiry
 
 
 def parse_raw_post(raw_post: dict) -> Optional[dict]:
