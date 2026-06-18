@@ -79,22 +79,21 @@ More info: tco.sg/CanMGCuXj
     },
 },
 
-{    "text": """Ghost Kakigori: 1-for-1 Sakura Special 🌸
+{    "text": """$1 Craze Hottis is back at 7-Eleven 🥳
 
-🔹 Enjoy 1-for-1 on selected Sakura Kakigori Sets & Sakura Matcha Sets
-🔹 Choose from flavours like Flamed Strawberry Brulee, Mango Sago Koori, Dubai Pistachio Kunafa & more
+🔹 Craze Hottis is now back in a ready-to-go pack for just $1
 🔹 While stocks last
-📅 Now till 14 Jun
-📍 All outlets
+📅 Now till 19 May
+📍 Selected outlets
 
-Find out more: tco.sg/7pm9y0hvG
+More info: tco.sg/1uptkV70H
 
 @sgfooddeals #deals
 """,
     "expected": {
         "is_food_deal": True,
-        "title": "Ghost Kakigori: 1-for-1 Sakura Special",
-        "merchant_name": "Ghost Kakigori",
+        "title": "$1 Craze Hottis is back at 7-Eleven",
+        "merchant_name": "7-Eleven",
     },
 },
 
