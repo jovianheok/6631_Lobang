@@ -15,7 +15,6 @@ VALUES (%s, %s, %s, %s, %s, now())
 ON CONFLICT (source_id, content_hash) DO NOTHING
 RETURNING id;
 """
-
 INSERT_PARSED_DEAL = """
 INSERT INTO deals (
     raw_deal_id,
@@ -24,9 +23,12 @@ INSERT INTO deals (
     title,
     description,
     merchant_name,
-    source_url
+    source_url,
+    cuisine,
+    price_level,
+    address
 )
-VALUES (%s, %s, %s, %s, %s, %s, %s)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (source_id, content_hash) DO NOTHING
 RETURNING id;
 """

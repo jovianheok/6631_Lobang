@@ -19,7 +19,7 @@ def save_raw_posts(raw_posts: list[dict], source_id: int):
         with conn:
             with conn.cursor() as cur:      # Create a cursor to run SQL commands
                 for post in raw_posts:
-                    cur.execute(INSERT_RAW_POST
+                    cur.execute(INSERT_RAW_POST,
                                 (source_id,
                                 post["source_url"],
                                 post["text"],
@@ -35,34 +35,35 @@ def save_raw_posts(raw_posts: list[dict], source_id: int):
     finally:
         conn.close
 
-
 def save_parsed_deals(parsed_deals: list[dict], source_id: int):
-    """
-    Purpose: Save parsed deals into deals table in Supabase
-    """
-    inserted_ids = []
-    conn = get_conn()
+      """
+      Purpose: Save parsed deals into deals table in Supabase
+      """
+      inserted_ids = []
+      conn = get_conn()
 
-    try:
-        with conn:
-            with conn.cursor() as cur:
-                for deal in parsed_deals:
-                    cur.execute(INSERT_PARSED_DEAL,
-                                (deal.get("raw_deal_id"),
-                                 source_id,
-                                 deal.get("content_hash"),
-                                 deal.get("title"),
-                                 deal.get("description"),
-                                 deal.get("merchant_name"),
-                                 deal.get("source_url"),
-                                 ),
-                    )
-                    row = cur.fetchone()
-                    if row:
-                        inserted_ids.append(row[0])
+      try:
+          with conn:
+              with conn.cursor() as cur:
+                  for deal in parsed_deals:
+                      cur.execute(INSERT_PARSED_DEAL,
+                                  (deal.get("raw_deal_id"),
+                                   source_id,
+                                   deal.get("content_hash"),
+                                   deal.get("title"),
+                                   deal.get("description"),
+                                   deal.get("merchant_name"),
+                                   deal.get("source_url"),
+                                   deal.get("cuisine"),
+                                   deal.get("price_level"),
+                                   deal.get("address"),
+                                   ),
+                      )
+                      row = cur.fetchone()
+                      if row:
+                          inserted_ids.append(row[0])
 
-        return inserted_ids
-    
-    finally:
-        conn.close()
+          return inserted_ids
 
+      finally:
+          conn.close()
