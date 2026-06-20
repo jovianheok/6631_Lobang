@@ -7,7 +7,7 @@ from .testcases import TEST_CASES
     TEST_CASES,
 )
 def test_parse_raw_post(case):
-    result = parse_raw_post({"text": case["text"]})      # Create an input dictionary and pass to parse_raw_post as required
+    result = parse_raw_post(case)
 
     # Food deals
     if case["expected"]["is_food_deal"]:

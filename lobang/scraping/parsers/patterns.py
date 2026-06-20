@@ -86,7 +86,7 @@ NEGATIVE_PATTERNS = [
     r"\bgiveaway\b", r"\bcontest\b", r"\blucky winner(s)?\b", r"\bwin\b", r"\bstand to win\b",
 ]
 
-# _3_merchant.py
+# _3_extract_merchant.py
 GENERIC_PROMO_WORDS = {
     "promo", "promotion", "deal", "deals", "offer", "offers", "discount", "sale", "limited", "time", "new", "best", "food", "finds",
 }
@@ -100,6 +100,19 @@ NON_MERCHANT_LOCATION_PHRASES = {
     "all outlets", "selected outlets", "participating outlets", "all stores",
     "selected stores", "participating stores", "all locations",
 }
+
+# _4_extract_validity.py
+MONTHS = {
+    "jan": 1, "january": 1, "feb": 2, "february": 2, "mar": 3, "march": 3, "apr": 4, "april": 4, "may": 5, 
+    "jun": 6, "june": 6, "jul": 7, "july": 7, "aug": 8, "august": 8, "sep": 9, "sept": 9, "september": 9,
+    "oct": 10, "october": 10, "nov": 11, "november": 11, "dec": 12, "december": 12,
+}
+
+EXPIRY_KEYWORDS = [
+    "now till", "till", "until", "ends", "end", "valid till", "available till", "giveaway ends", 
+    "promotion ends", "deal ends",
+]
+
 
 # List of regular expression patterns to extract dates, validity and expiry
 # DATE_PATTERNS = 

@@ -3,7 +3,9 @@ Purpose: Hold reusable helper functions for text cleaning, normalization, and pa
 """
 
 import re
+from datetime import date
 from typing import Optional
+from .patterns import MONTHS
 
 def normalize_text(text: str) -> str:
     """
@@ -39,3 +41,34 @@ def extract_first_match(text: str, patterns: list[str],) -> Optional[str]:
             return match.group(0)
 
     return None
+
+
+def parse_day_month_from_text(text: str, post_date: date) -> Optional[date]:
+    """
+    Purpose: Parse a date and normalize it to YYYY-MM-DD
+    Year -> Use the post year by default. If the inferred date is earlier than the post date, roll over to next year.
+    """
+    # Look for a day + month pattern anywhere in the text.
+    match = re.search(r"\b(\d{1,2})\s+([A-Za-z]{3,9})\b", text, flags=re.IGNORECASE)
+    if not match:
+        return None
+
+    day = int(match.group(1))
+    month_name = match.group(2).lower()
+    month = MONTHS.get(month_name)
+
+    if month is None:
+        return None
+
+    try:
+        candidate = date(post_date.year, month, day)        # Build the date using the post year first
+    except ValueError:
+        return None
+
+    if candidate < post_date:       # If the date already passed relative to the post date, assume it refers to the next year.
+        try:
+            candidate = date(post_date.year + 1, month, day)
+        except ValueError:
+            return None
+
+    return candidate

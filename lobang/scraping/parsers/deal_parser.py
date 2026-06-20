@@ -2,6 +2,7 @@
 Purpose: Serve as the main parser entry point that orchestrates classification and extraction modules to convert a raw Telegram post into a structured deal record
 """
 from typing import Optional
+from datetime import datetime
 
 from .utils import normalize_text
 from ._1_classification import is_food_deal
@@ -10,8 +11,9 @@ from ._3_extract_merchant import extract_merchant_name
 from ._4_extract_expiry import extract_expiry
 
 
-def parse_raw_post(raw_post: dict) -> Optional[dict]:
-    text = normalize_text(raw_post.get("text", ""))
+def parse_raw_post(row: dict) -> Optional[dict]:
+    text = normalize_text(row.get("raw_text", ""))
+
     if not text:
         return None
 
@@ -29,7 +31,8 @@ def parse_raw_post(raw_post: dict) -> Optional[dict]:
     merchant_name = extract_merchant_name(text, title)
 
     # 4. Extract expiry
-    expiry = extract_expiry(text)
+    post_date = row.get("scraped_at", "").date()
+    expiry = extract_expiry(text, post_date)
 
     # 5. Extract location
     # location = extract_location(text)

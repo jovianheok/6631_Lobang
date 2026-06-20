@@ -7,9 +7,10 @@ from datetime import date
 from typing import Optional
 
 from .patterns import EXPIRY_KEYWORDS
+from .utils import parse_day_month_from_text
 
 
-def extract_expiry(text: str, post_date: date) -> Optional[str]:
+def extract_expiry(text: str, post_date: date) -> Optional[date]:
     """
     Purpose: Extract the promotion expiry date
     """
@@ -18,22 +19,21 @@ def extract_expiry(text: str, post_date: date) -> Optional[str]:
     if keyword_date is not None:
         return keyword_date
 
-    # Second pass: look at calendar lines for one-day promotions
+    # Second pass: handle posts that have a date but no expiry keywords
     single_date = extract_single_promo_date(text, post_date)
     if single_date is not None:
         return single_date
 
     return None
 
-def extract_keyword_expiry(text, post_date):
+def extract_keyword_expiry(text, post_date: date) -> Optional[date]:
+    """
+    Purpose: Extract expiry date by extracting the date after expiry keyword
+    """
     lowered = text.lower()
-
-    # Check each keyword and try to parse the date that follows it.
-    for keyword in EXPIRY_KEYWORDS:
-        # Match the keyword and capture the text after it.
-        # Example:
-        #   "Now till 30 Jun" -> captures "30 Jun"
-        pattern = rf"\b{re.escape(keyword)}\b\s*(.*)"
+    for keyword in EXPIRY_KEYWORDS:      # Check each keyword and try to parse the date that follows it
+        pattern = rf"\b{re.escape(keyword)}\b\s*(.*)"       # builds a regular expression pattern for the current keyword
+                                                            # '.*' matches any character, any number of times
         match = re.search(pattern, lowered, flags=re.IGNORECASE)
 
         if not match:
@@ -43,17 +43,30 @@ def extract_keyword_expiry(text, post_date):
         if not tail:
             continue
 
-        # Remove trailing noise such as time, punctuation, or brackets.
-        tail = clean_date_tail(tail)
+        tail = clean_date_tail(tail)        # Remove trailing noise such as time, punctuation, or brackets
 
         parsed = parse_day_month_from_text(tail, post_date)
-        if parsed is not None:
+        if parsed:
             return parsed
-
-        if keyword == "limited time only":      # If the keyword itself is "limited time only", there may be no explicit date.
-            return None
 
     return None
     
-def extract_single_promo_date(text, post_date):
-    pass
+
+def clean_date_tail(text: str) -> str:
+    """
+    Purpose: Remove text that commonly appears after a date
+    """
+    return re.split(r"[,(|)]|\|", text, maxsplit=1)[0].strip()
+
+
+def extract_single_promo_date(text: str, post_date: date) -> Optional[date]:
+    """
+    Purpose: Extract single day from posts that have no expiry keyword
+    """
+    for line in text.splitlines():
+        parsed_date = parse_day_month_from_text(line, post_date)
+
+        if parsed_date:
+            return parsed_date
+
+    return None

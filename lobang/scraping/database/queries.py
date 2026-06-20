@@ -1,5 +1,5 @@
 """
-Purpose: Hold SQL strings for sstorage.py to execute at runtime
+Purpose: Hold SQL strings for storage.py to execute at runtime
 """
 
 INSERT_RAW_POST = """
@@ -14,6 +14,16 @@ INSERT INTO raw_deals (
 VALUES (%s, %s, %s, %s, %s, now())
 ON CONFLICT (source_id, content_hash) DO NOTHING
 RETURNING id;
+"""
+
+RETRIEVE_RAW_POST = """
+SELECT 
+id,
+raw_text,
+scraped_at
+
+FROM raw_posts
+ORDER BY scraped_at DESC
 """
 
 INSERT_PARSED_DEAL = """
