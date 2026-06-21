@@ -47,6 +47,9 @@ def save_parsed_deals(parsed_deals: list[dict], source_id: int):
         with conn:
             with conn.cursor() as cur:
                 for deal in parsed_deals:
+                    
+                    if not deal:
+                        continue
 
                     cur.execute(INSERT_PARSED_DEAL,
                                 (deal.get("raw_deal_id"),       # raw_deal_id
@@ -56,7 +59,7 @@ def save_parsed_deals(parsed_deals: list[dict], source_id: int):
 
                                  deal.get("title"),             # title
                                  deal.get("merchant_name"),     # merchant_name
-                                 deal.get("expiry_date"),       # expiry
+                                 deal.get("expiry_date"),       # expiry_date
                                  deal.get("display_until"),     # display_until
 
                                 "active",                       # status

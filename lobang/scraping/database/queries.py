@@ -5,7 +5,6 @@ Purpose: Hold SQL strings for insertion.py, retrieval.py and cleanup.py to execu
 INSERT_RAW_POST = """
 INSERT INTO raw_deals (
     source_id, source_url, raw_text, raw_payload, content_hash, scraped_at
-    UNIQUE (source_id, content_hash)
 )
 VALUES (%s, %s, %s, %s, %s, now())
 ON CONFLICT (source_id, content_hash) DO NOTHING
@@ -23,7 +22,6 @@ INSERT_PARSED_DEAL = """
 INSERT INTO deals (
     raw_deal_id, source_id, source_url, content_hash,
     title, merchant_name, expiry_date, display_until, status
-    UNIQUE (source_id, content_hash)
 )
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (source_id, content_hash) DO NOTHING

@@ -24,5 +24,5 @@ CREATE TABLE IF NOT EXISTS public.deals (
 
 );
 
-create unique index if not exists deals_source_id_content_hash_idx
-on public.deals (source_id, content_hash);
+CREATE UNIQUE INDEX IF NOT EXISTS deals_source_id_content_hash_idx
+ON public.deals (source_id, content_hash);

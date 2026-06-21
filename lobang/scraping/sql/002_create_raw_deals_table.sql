@@ -16,8 +16,8 @@ In order to insert a raw_deal with a source_id, the source_id has to exist in 's
 'on delete restrict': Cannot delete a source if raw deals still reference it
 */
 
-create unique index if not exists raw_deals_source_id_content_hash_idx
-on public.raw_deals (source_id, content_hash);
+CREATE UNIQUE INDEX IF NOT EXISTS raw_deals_source_id_content_hash_idx
+ON public.raw_deals (source_id, content_hash);
 /*
 Create a unique index on (source_id, content_hash) so that same source cannot have duplicate content hashes
 */
