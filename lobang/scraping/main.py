@@ -6,7 +6,7 @@
   from parsers.deal_parser import parse_raw_post
   from database.insertion import save_raw_posts, save_parsed_deals
   from database.retrieval import get_raw_posts
-  from googleplaces.enricher import enrich_merchant
+  from scrapers.googleplaces.enricher import enrich_merchant
 
   def main():
       try:
