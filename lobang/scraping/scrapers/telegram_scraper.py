@@ -42,7 +42,7 @@ def scrape_telegram_channel():
                 text = text_locator.inner_text().strip() if text_locator.count() else ""        # Extract text and remove extra spaces/newlines if text element exists
                 
                 post_url = date_locator.get_attribute("href") if date_locator.count() else None     # Extract URL and date if date element exists
-                posted_at = date_locator.inner_text().strip() if date_locator.count() else None
+                time_posted = date_locator.inner_text().strip() if date_locator.count() else None
 
                 if not text:        # Skip posts with empty text                        
                     continue
@@ -50,7 +50,7 @@ def scrape_telegram_channel():
                 raw_posts.append({
                     "source_url": CHANNEL_URL,
                     "post_url": post_url,
-                    "posted_at": posted_at,
+                    "posted_at": time_posted,
                     "text": text,
                     "content_hash": make_content_hash(text, post_url),
                 })
