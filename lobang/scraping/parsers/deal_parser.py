@@ -9,7 +9,7 @@ from ._1_classification import is_food_deal
 from ._2_extract_title import extract_title
 from ._3_extract_merchant import extract_merchant_name
 from ._4_extract_expiry import extract_expiry
-
+from ._7_enrich_googleplaces.enricher import enrich_merchant
 
 def parse_raw_post(row: dict) -> Optional[dict]:
     text = normalize_text(row.get("raw_text", ""))
@@ -39,7 +39,8 @@ def parse_raw_post(row: dict) -> Optional[dict]:
     # location = extract_location(text)
 
     # 6. Extract price range
-    # 7. Extract cuisine
+    # 7. Enrich merchant via Google Places to get cuisine, price level and location(?)
+    place_info = enrich_merchant(merchant_name) or {}
 
 
     return {
@@ -51,4 +52,7 @@ def parse_raw_post(row: dict) -> Optional[dict]:
         "merchant_name": merchant_name,
         "expiry_date": expiry_date,
         "display_until": display_until,
+        "cuisine": place_info.get("cuisine"),
+        "price_level": place_info.get("price_level"),
+        "address": place_info.get("address"),
     }
