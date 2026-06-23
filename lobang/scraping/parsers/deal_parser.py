@@ -44,9 +44,9 @@ def parse_raw_post(row: dict) -> Optional[dict]:
 
 
     return {
-        "raw_deal_id": row["id"],
-        "source_url": row["source_url"],
-        "content_hash": row["content_hash"],
+        "raw_deal_id": row.get("id"),
+        "source_url": row.get("source_url"),
+        "content_hash": row.get("content_hash"),
 
         "title": title,
         "merchant_name": merchant_name,

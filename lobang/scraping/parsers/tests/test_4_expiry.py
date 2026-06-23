@@ -9,4 +9,4 @@ from .testcases import TEST_CASES
 def test_parse_raw_post(case: dict):
     result = parse_raw_post(case)
     if case["expected"]["is_food_deal"]:
-        assert result["expiry"] == case["expected"]["expiry"]
+        assert result["expiry_date"] == case["expected"]["expiry_date"]
