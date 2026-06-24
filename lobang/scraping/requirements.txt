@@ -9,3 +9,4 @@ Pygments==2.20.0
 pytest==9.1.0
 python-dotenv==1.2.2
 typing_extensions==4.15.0
+requests==2.32.3

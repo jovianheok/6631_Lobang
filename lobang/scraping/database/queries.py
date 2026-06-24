@@ -10,9 +10,8 @@ VALUES (%s, %s, %s, %s, %s, now())
 ON CONFLICT (source_id, content_hash) DO NOTHING
 RETURNING id;
 """
-
 RETRIEVE_RAW_POST = """
-SELECT 
+SELECT
     id, source_url, raw_text, content_hash, scraped_at
 FROM raw_deals
 ORDER BY scraped_at DESC
