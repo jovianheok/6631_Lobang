@@ -51,7 +51,7 @@ PRICE_LEVEL_MAP = {
 }
 
 
-def enrich_merchant(merchant_name: str) -> Optional[dict]:
+def extract_place_info(merchant_name: str) -> Optional[dict]:
     """
     Query Google Places Text Search for a merchant name and return cuisine, price_level, and address.
     Returns None if the API call fails or no results are found.
