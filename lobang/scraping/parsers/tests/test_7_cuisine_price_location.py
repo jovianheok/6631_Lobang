@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from ..enricher import enrich_merchant, extract_cuisine
+from ...scrapers import enrich_merchant, extract_cuisine
 
 
 # --- extract_cuisine tests (no mocking needed) ---
