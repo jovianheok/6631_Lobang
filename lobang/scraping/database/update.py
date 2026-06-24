@@ -1,11 +1,14 @@
 """
-Purpose: Mark status of expired deals to 'expired' to tell frontend not to display
+Purpose: Mark status of expired deals if expiry_date < now() to tell frontend not to display
 """
 
 from .connection import get_conn
 from .queries import UPDATE_EXPIRED_DEALS
 
 def update_expired_deals() -> int:
+    """
+    Purpose: Mark status of expired deals if expiry_date < now() to tell frontend not to display
+    """
     conn = get_conn()
     try:
         with conn:
