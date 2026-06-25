@@ -1,5 +1,5 @@
 """
-Purpose: Store all regex patterns in one place so the parser logic stays clean
+Purpose: Central store for regex patterns and shared constants
 """
 
 r"""
@@ -113,7 +113,14 @@ EXPIRY_KEYWORDS = [
     "promotion ends", "deal ends",
 ]
 
-# _5_extract_place_info.py
+# _5_extract_location.py
+LOCATION_HINT_PATTERNS = [
+    r"^📍\s*([^\n.,;]+)$", r"\blocation\s*[:\-]\s*([^\n.,;]+)", r"\blocations\s*[:\-]\s*([^\n.,;]+)",
+    r"\bonly at\s+([^\n.,;]+)", r"\bavailable at\s+([^\n.,;]+)", r"\bback at\s+([^\n.,;]+)",
+    r"\bexclusively at\s+([^\n.,;]+)",
+]
+
+# _6_extract_place_info.py
 CUISINE_TYPE_MAP = {
     "chinese_restaurant": "Chinese", "japanese_restaurant": "Japanese", "korean_restaurant": "Korean",
     "indian_restaurant": "Indian", "thai_restaurant": "Thai", "italian_restaurant": "Italian",
@@ -131,3 +138,19 @@ PRICE_LEVEL_MAP = {
     "PRICE_LEVEL_FREE": 0, "PRICE_LEVEL_INEXPENSIVE": 1, "PRICE_LEVEL_MODERATE": 2,
     "PRICE_LEVEL_EXPENSIVE": 3, "PRICE_LEVEL_VERY_EXPENSIVE": 4,
 }
+
+REGION_ORDER = ["north", "south", "east", "west", "central"]
+
+REGION_KEYWORDS = {
+    "north": ["woodlands", "yishun", "sembawang", "admiralty", "khatib", "springleaf", "marsiling",],
+    "south": ["harbourfront", "sentosa", "telok blangah", "bukit merah", "keppel",],
+    "east": ["tampines", "pasir ris", "bedok", "simei", "changi", "siglap", "marine parade",
+                "katong", "joo chiat", "eunos",],
+    "west": ["jurong", "clementi", "boon lay", "pioneer", "bukit batok", "choa chu kang",
+                "bukit panjang", "west coast",],
+    "central": ["orchard", "bugis", "dhoby ghaut", "novena", "bishan","toa payoh", "city hall",
+                "raffles place", "tanjong pagar", "newton", "serangoon", "ang mo kio", "little india",
+                "clarke quay", "marina bay",],
+}
+
+ISLANDWIDE_OUTLET_THRESHOLD = 20
