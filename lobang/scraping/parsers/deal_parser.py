@@ -9,7 +9,7 @@ from ._1_classification import is_food_deal
 from ._2_extract_title import extract_title
 from ._3_extract_merchant_name import extract_merchant_name
 from ._4_extract_expiry_date import extract_expiry
-from ._5_extract_place_info import extract_place_info
+from ._5_extract_place_info import (fetch_place, extract_cuisine, extract_price_level, extract_address)
 
 def parse_raw_post(row: dict) -> Optional[dict]:
     text = normalize_text(row.get("raw_text", ""))
@@ -35,12 +35,11 @@ def parse_raw_post(row: dict) -> Optional[dict]:
     expiry_date = extract_expiry(text, scraped_at)
     display_until = (expiry_date if expiry_date is not None else scraped_at + timedelta(days=30))
 
-    # 5. Extract location
-    # location = extract_location(text)
-
-    # 6. Extract price range
-    # 7. Enrich merchant via Google Places to get cuisine, price level and location
-    place_info = extract_place_info(merchant_name) or {}
+    # 5. Enrich merchant via Google Places
+    place = fetch_place(merchant_name)
+    cuisine = extract_cuisine(place)
+    price_level = extract_price_level(place)
+    address = extract_address(place)
 
 
     return {
@@ -52,7 +51,7 @@ def parse_raw_post(row: dict) -> Optional[dict]:
         "merchant_name": merchant_name,
         "expiry_date": expiry_date,
         "display_until": display_until,
-        "cuisine": place_info.get("cuisine"),
-        "price_level": place_info.get("price_level"),
-        "address": place_info.get("address"),
+        "cuisine": cuisine,
+        "price_level": price_level,
+        "address": address,
     }
