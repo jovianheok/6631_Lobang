@@ -20,6 +20,10 @@ CREATE TABLE IF NOT EXISTS public.deals (
 
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     expired_at TIMESTAMPTZ
+
+    cuisine text,
+    price_level int,
+    address text;
     
 
 );
