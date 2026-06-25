@@ -113,6 +113,25 @@ EXPIRY_KEYWORDS = [
     "promotion ends", "deal ends",
 ]
 
+# _5_extract_place_info.py
+CUISINE_TYPE_MAP = {
+    "chinese_restaurant": "Chinese", "japanese_restaurant": "Japanese", "korean_restaurant": "Korean",
+    "indian_restaurant": "Indian", "thai_restaurant": "Thai", "italian_restaurant": "Italian",
+    "american_restaurant": "American", "mexican_restaurant": "Mexican", "seafood_restaurant": "Seafood",
+    "vegetarian_restaurant": "Vegetarian", "vegan_restaurant": "Vegan", "french_restaurant": "French",
+    "mediterranean_restaurant": "Mediterranean", "middle_eastern_restaurant": "Middle Eastern",
+    "vietnamese_restaurant": "Vietnamese", "indonesian_restaurant": "Indonesian",
+    "malaysian_restaurant": "Malaysian", "ramen_restaurant": "Ramen", "sushi_restaurant": "Sushi",
+    "pizza_restaurant": "Pizza", "hamburger_restaurant": "Burgers", "sandwich_shop": "Sandwiches",
+    "bakery": "Bakery", "cafe": "Cafe", "bar": "Bar", "ice_cream_shop": "Ice Cream", 
+    "bubble_tea_store": "Bubble Tea",
+}
+
+PRICE_LEVEL_MAP = {
+    "PRICE_LEVEL_FREE": 0, "PRICE_LEVEL_INEXPENSIVE": 1, "PRICE_LEVEL_MODERATE": 2,
+    "PRICE_LEVEL_EXPENSIVE": 3, "PRICE_LEVEL_VERY_EXPENSIVE": 4,
+}
+
 
 # List of regular expression patterns to extract dates, validity and expiry
 # DATE_PATTERNS = 
