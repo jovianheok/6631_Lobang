@@ -1,5 +1,5 @@
 """
-Purpose: Store all regex patterns in one place so the parser logic stays clean
+Purpose: Central store for regex patterns and shared constants
 """
 
 r"""
@@ -113,13 +113,53 @@ EXPIRY_KEYWORDS = [
     "promotion ends", "deal ends",
 ]
 
+# _5_extract_location.py
+LOCATION_HINT_PATTERNS = [
+    r"^📍\s*([^\n.,;]+)$", r"\blocation\s*[:\-]\s*([^\n.,;]+)", r"\blocations\s*[:\-]\s*([^\n.,;]+)",
+    r"\bonly at\s+([^\n.,;]+)", r"\bavailable at\s+([^\n.,;]+)", r"\bback at\s+([^\n.,;]+)",
+    r"\bexclusively at\s+([^\n.,;]+)",
+]
 
-# List of regular expression patterns to extract dates, validity and expiry
-# DATE_PATTERNS = 
+# _6_extract_place_info.py
+CUISINE_TYPE_MAP = {
+    "chinese_restaurant": "Chinese", "japanese_restaurant": "Japanese", "korean_restaurant": "Korean",
+    "indian_restaurant": "Indian", "thai_restaurant": "Thai", "italian_restaurant": "Italian",
+    "american_restaurant": "American", "mexican_restaurant": "Mexican", "seafood_restaurant": "Seafood",
+    "vegetarian_restaurant": "Vegetarian", "vegan_restaurant": "Vegan", "french_restaurant": "French",
+    "mediterranean_restaurant": "Mediterranean", "middle_eastern_restaurant": "Middle Eastern",
+    "vietnamese_restaurant": "Vietnamese", "indonesian_restaurant": "Indonesian",
+    "malaysian_restaurant": "Malaysian", "ramen_restaurant": "Ramen", "sushi_restaurant": "Sushi",
+    "pizza_restaurant": "Pizza", "hamburger_restaurant": "Burgers", "sandwich_shop": "Sandwiches",
+    "bakery": "Bakery", "cafe": "Cafe", "bar": "Bar", "ice_cream_shop": "Ice Cream", 
+    "bubble_tea_store": "Bubble Tea",
+}
 
-# List of regular expression patterns to extract location
-# LOCATION_PATTERNS = 
+PRICE_LEVEL_MAP = {
+    "PRICE_LEVEL_FREE": 0, "PRICE_LEVEL_INEXPENSIVE": 1, "PRICE_LEVEL_MODERATE": 2,
+    "PRICE_LEVEL_EXPENSIVE": 3, "PRICE_LEVEL_VERY_EXPENSIVE": 4,
+}
 
-# Set of generic promotional words that should not be treated as merchant names during extraction
+REGION_ORDER = ["north", "south", "east", "west", "central"]
 
-# 
+REGION_KEYWORDS = {
+    "north": ["woodlands", "yishun", "sembawang", "admiralty", "khatib", "springleaf", "marsiling",],
+    "south": ["harbourfront", "sentosa", "telok blangah", "bukit merah", "keppel",],
+    "east": ["tampines", "pasir ris", "bedok", "simei", "changi", "siglap", "marine parade",
+                "katong", "joo chiat", "eunos",],
+    "west": ["jurong", "clementi", "boon lay", "pioneer", "bukit batok", "choa chu kang",
+                "bukit panjang", "west coast",],
+    "central": ["orchard", "bugis", "dhoby ghaut", "novena", "bishan","toa payoh", "city hall",
+                "raffles place", "tanjong pagar", "newton", "serangoon", "ang mo kio", "little india",
+                "clarke quay", "marina bay",],
+}
+
+ISLANDWIDE_OUTLET_THRESHOLD = 20
+
+# _7_resolve_location.py
+EXPLICIT_LOCATION_PATTERNS = [
+    r"\b(all outlets?(?:\s+except\s+[^\n.,;]+)?)\b", r"\b(selected outlets?(?:\s+only)?)\b",
+    r"\b(participating outlets?(?:\s+only)?)\b", r"\b(all stores?(?:\s+except\s+[^\n.,;]+)?)\b",
+    r"\b(selected stores?(?:\s+only)?)\b", r"\b(participating stores?(?:\s+only)?)\b",
+    r"\b(all locations?(?:\s+except\s+[^\n.,;]+)?)\b", r"\b(selected locations?(?:\s+only)?)\b",
+    r"\b(participating locations?(?:\s+only)?)\b",
+]
