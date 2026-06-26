@@ -154,3 +154,12 @@ REGION_KEYWORDS = {
 }
 
 ISLANDWIDE_OUTLET_THRESHOLD = 20
+
+# _7_resolve_location.py
+EXPLICIT_LOCATION_PATTERNS = [
+    r"\b(all outlets?(?:\s+except\s+[^\n.,;]+)?)\b", r"\b(selected outlets?(?:\s+only)?)\b",
+    r"\b(participating outlets?(?:\s+only)?)\b", r"\b(all stores?(?:\s+except\s+[^\n.,;]+)?)\b",
+    r"\b(selected stores?(?:\s+only)?)\b", r"\b(participating stores?(?:\s+only)?)\b",
+    r"\b(all locations?(?:\s+except\s+[^\n.,;]+)?)\b", r"\b(selected locations?(?:\s+only)?)\b",
+    r"\b(participating locations?(?:\s+only)?)\b",
+]
