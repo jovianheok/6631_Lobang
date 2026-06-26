@@ -19,7 +19,27 @@ async function authHeaders(): Promise<Record<string, string>> {
   };
 }
 
-export async function getDeals() {
+// Shape of a deal returned by the backend (mirrors DealOut on the FastAPI side).
+export type Deal = {
+  id: number;
+  title: string;
+  merchant_name: string | null;
+  source_url: string | null;
+  cuisine: string | null;
+  price_level: number | null;
+  address: string | null;
+  covered_regions: string[];
+  display_location: string | null;
+  // Legacy/optional fields, currently unpopulated
+  description: string | null;
+  location_name: string | null;
+  discount_value: number | null;
+  discount_unit: string | null;
+  distance_km: number | null;
+  score: number | null;
+};
+
+export async function getDeals(): Promise<Deal[]> {
   const response = await fetch(                     // Sends HTTP request to backend and awaits backend response
     `${API_BASE_URL}/api/v1/deals`
   );

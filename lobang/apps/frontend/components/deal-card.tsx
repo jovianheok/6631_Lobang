@@ -3,7 +3,7 @@
   '?': optional
   '| null': value can explicitly be null
 */
-type DealCardProps = {                          
+type DealCardProps = {
   title: string;                                  // Main deal title
   merchant_name?: string | null;                  // Store name or merchant name
   description?: string | null;                    // Short description of the deal
@@ -13,6 +13,10 @@ type DealCardProps = {
   source_url?: string | null;                     // External link to original sources
   distance_km?: number | null;                    // Distance from user in kilometres
   score?: number | null;                          // Ranking/relevance score
+  cuisine?: string | null;                        // Cuisine label (Google Places)
+  price_level?: number | null;                    // 0..4 price level
+  display_location?: string | null;               // Frontend-friendly location label
+  covered_regions?: string[];                     // SG regions the merchant covers
 };
 
 
@@ -29,7 +33,23 @@ export default function DealCard({
   source_url,
   distance_km,
   score,
+  cuisine,
+  price_level,
+  display_location,
+  covered_regions,
 }: DealCardProps) {
+  // Render price level as $ signs (1 -> $, 4 -> $$$$); null = unknown.
+  const priceLabel =
+    typeof price_level === "number" && price_level > 0
+      ? "$".repeat(price_level)
+      : null;
+  // Prefer an explicit display location, else fall back to covered regions.
+  const locationLabel =
+    display_location ??
+    location_name ??
+    (covered_regions && covered_regions.length > 0
+      ? covered_regions.join(", ")
+      : null);
   return (
     /*
       Outer card container
@@ -76,10 +96,20 @@ export default function DealCard({
       {/* Metadata badges section */}
       <div className="mt-4 flex flex-wrap gap-2 text-sm text-gray-600">
 
+        {/* Cuisine badge */}
+        {cuisine ? (
+          <span className="rounded-full bg-gray-100 px-3 py-1">{cuisine}</span>
+        ) : null}
+
+        {/* Price level badge */}
+        {priceLabel ? (
+          <span className="rounded-full bg-gray-100 px-3 py-1">{priceLabel}</span>
+        ) : null}
+
         {/* Location badge */}
-        {location_name ? (
-          <span className="rounded-full bg-gray-100 px-3 py-1">
-            {location_name}
+        {locationLabel ? (
+          <span className="rounded-full bg-gray-100 px-3 py-1 capitalize">
+            {locationLabel}
           </span>
         ) : null}
 

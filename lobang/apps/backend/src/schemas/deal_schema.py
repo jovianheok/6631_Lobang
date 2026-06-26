@@ -9,10 +9,19 @@ class DealOut(BaseModel):
     id: int
     title: str
     merchant_name: Optional[str] = None
+    source_url: Optional[str] = None
+
+    # Enrichment fields (see deals table / Google Places pipeline)
+    cuisine: Optional[str] = None
+    price_level: Optional[int] = None          # 0..4
+    address: Optional[str] = None
+    covered_regions: list[str] = []            # SG regions the merchant covers
+    display_location: Optional[str] = None     # frontend-friendly location label
+
+    # Not (yet) stored on deals; kept optional so existing UI keeps working
     description: Optional[str] = None
     location_name: Optional[str] = None
     discount_value: Optional[float] = None
     discount_unit: Optional[str] = None
-    source_url: Optional[str] = None
     distance_km: Optional[float] = None
     score: Optional[float] = None

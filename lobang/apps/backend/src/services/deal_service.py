@@ -24,12 +24,14 @@ def get_deals() -> list[dict[str, Any]]:
                     id,
                     title,
                     merchant_name,
-                    description,
-                    location_name,
-                    discount_value,
-                    discount_unit,
-                    source_url
+                    source_url,
+                    cuisine,
+                    price_level,
+                    address,
+                    covered_regions,
+                    display_location
                 FROM public.deals
+                WHERE status = 'active'
                 ORDER BY created_at DESC
                 LIMIT 50;
                 """
@@ -45,13 +47,12 @@ def get_deals() -> list[dict[str, Any]]:
                         "id": row[0],
                         "title": row[1],
                         "merchant_name": row[2],
-                        "description": row[3],
-                        "location_name": row[4],
-                        "discount_value": float(row[5]) if row[5] is not None else None,
-                        "discount_unit": row[6],
-                        "source_url": row[7],
-                        "distance_km": None,
-                        "score": None,
+                        "source_url": row[3],
+                        "cuisine": row[4],
+                        "price_level": row[5],
+                        "address": row[6],
+                        "covered_regions": row[7] or [],
+                        "display_location": row[8],
                     }
                 )
 
