@@ -44,7 +44,7 @@ def parse_raw_post(row: dict) -> Optional[dict]:
 
     # 6. Enrich cuisine, price_level, address via Google Places
     place = fetch_place(merchant_name) if merchant_name else None
-    
+
     cuisine = extract_cuisine(place)
     price_level = extract_price_level(place)
     address = extract_address(place)
@@ -59,7 +59,7 @@ def parse_raw_post(row: dict) -> Optional[dict]:
         covered_regions = []
 
     # 7. Resolve frontend-facing location display
-    location_meta = resolve_location_metadata(explicit_location, covered_regions)
+    location_meta = resolve_location_metadata(text, explicit_location, covered_regions)
 
     location_text = location_meta["location_text"]
     display_location = location_meta["display_location"]
