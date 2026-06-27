@@ -44,7 +44,11 @@ export async function proxy(req: NextRequest) {
 
   return res;
 }
-// apply this middlewre to all routes except static files and images
+// apply this middlewre to all routes except Next internals, the favicon, and
+// static asset files in public/ (e.g. the logo) — otherwise image requests get
+// redirected to /login and fail to load.
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+  ],
 };

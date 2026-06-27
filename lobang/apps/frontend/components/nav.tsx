@@ -32,12 +32,14 @@ export default function Nav() {
 
   return (
     <header className="border-b">
-      <div className="flex items-center gap-6 px-6 py-4 text-sm">
+      <div className="flex items-center px-6 py-3">
+        {/* Logo on the left */}
         <Link href="/" className="shrink-0">
-          <Image src="/logo.jpeg" alt="Lobang" width={80} height={40} priority />
+          <Image src="/logo.jpeg" alt="Lobang" width={200} height={100} priority />
         </Link>
 
-        <nav className="flex items-center gap-6">
+        {/* Navigation links pushed to the right */}
+        <nav className="ml-auto flex items-center gap-6 text-sm">
           <Link href="/" className={linkClass("/")}>Home</Link>
           <Link href="/for-you" className={linkClass("/for-you")}>For You</Link>
           {signedIn && (
@@ -46,13 +48,10 @@ export default function Nav() {
           {signedIn && (
             <Link href="/profile" className={linkClass("/profile")}>Profile</Link>
           )}
+          {signedIn === false && (
+            <Link href="/login" className={linkClass("/login")}>Log in</Link>
+          )}
         </nav>
-
-        {signedIn === false && (
-          <Link href="/login" className={`ml-auto ${linkClass("/login")}`}>
-            Log in
-          </Link>
-        )}
       </div>
     </header>
   );
