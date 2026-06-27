@@ -32,9 +32,13 @@ export async function proxy(req: NextRequest) {
   // check is the user has an active session
   const { data: { session } } = await supabase.auth.getSession();
 
-  // pages that don't require login
+  // pages that don't require login: the public home/deal browser, the auth
+  // pages, and the OAuth callback. Home is an exact match so it doesn't
+  // accidentally make every route public.
   const isPublic =
+    req.nextUrl.pathname === "/" ||
     req.nextUrl.pathname.startsWith("/login") ||
+    req.nextUrl.pathname.startsWith("/signup") ||
     req.nextUrl.pathname.startsWith("/auth/callback");
 
   // if no session and page is not public, redirect to login
