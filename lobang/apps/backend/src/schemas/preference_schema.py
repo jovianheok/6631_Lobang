@@ -7,7 +7,6 @@ from typing import Optional
 
 
 class PreferenceUpdate(BaseModel):
-  display_name: Optional[str] = None
   max_price_level: Optional[int] = None      # 0..4, None = any price
   cuisine_preferences: list[str] = []        # canonical cuisine labels
   preferred_regions: list[str] = []          # SG regions

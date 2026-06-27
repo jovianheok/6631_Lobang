@@ -7,7 +7,7 @@ from src.database.connection import get_conn
 
 # Columns returned to the client, in a fixed order shared by both queries
 _COLUMNS = """
-  user_id, display_name, max_price_level, cuisine_preferences,
+  user_id, max_price_level, cuisine_preferences,
   preferred_regions, home_latitude, home_longitude, max_distance_km
 """
 
@@ -15,13 +15,12 @@ _COLUMNS = """
 def _row_to_dict(row: tuple) -> dict[str, Any]:
   return {
       "user_id": str(row[0]),
-      "display_name": row[1],
-      "max_price_level": row[2],
-      "cuisine_preferences": row[3] or [],
-      "preferred_regions": row[4] or [],
-      "home_latitude": row[5],
-      "home_longitude": row[6],
-      "max_distance_km": float(row[7]) if row[7] is not None else None,
+      "max_price_level": row[1],
+      "cuisine_preferences": row[2] or [],
+      "preferred_regions": row[3] or [],
+      "home_latitude": row[4],
+      "home_longitude": row[5],
+      "max_distance_km": float(row[6]) if row[6] is not None else None,
   }
 
 
@@ -61,11 +60,10 @@ def update_preferences(user_id: str, data: dict[str, Any]) -> dict[str, Any]:
           cur.execute(
               f"""
               INSERT INTO public.user_profiles
-                  (user_id, display_name, max_price_level, cuisine_preferences,
+                  (user_id, max_price_level, cuisine_preferences,
                    preferred_regions, home_latitude, home_longitude, max_distance_km)
-              VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+              VALUES (%s, %s, %s, %s, %s, %s, %s)
               ON CONFLICT (user_id) DO UPDATE SET
-                  display_name        = EXCLUDED.display_name,
                   max_price_level     = EXCLUDED.max_price_level,
                   cuisine_preferences = EXCLUDED.cuisine_preferences,
                   preferred_regions   = EXCLUDED.preferred_regions,
@@ -77,7 +75,6 @@ def update_preferences(user_id: str, data: dict[str, Any]) -> dict[str, Any]:
               """,
               (
                   user_id,
-                  data.get("display_name"),
                   data.get("max_price_level"),
                   data.get("cuisine_preferences") or [],
                   data.get("preferred_regions") or [],

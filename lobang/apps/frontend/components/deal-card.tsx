@@ -17,6 +17,8 @@ type DealCardProps = {
   price_level?: number | null;                    // 0..4 price level
   display_location?: string | null;               // Frontend-friendly location label
   covered_regions?: string[];                     // SG regions the merchant covers
+  bookmarked?: boolean;                           // Whether the user has saved this deal
+  onToggleBookmark?: () => void;                  // Save/unsave handler (omit to hide button)
 };
 
 
@@ -37,12 +39,24 @@ export default function DealCard({
   price_level,
   display_location,
   covered_regions,
+  bookmarked,
+  onToggleBookmark,
 }: DealCardProps) {
   // Render price level as $ signs (1 -> $, 4 -> $$$$); null = unknown.
   const priceLabel =
     typeof price_level === "number" && price_level > 0
       ? "$".repeat(price_level)
       : null;
+  // Color-grade the match score from green (strong) to yellow (weak). Score
+  // ranges 0..5 (+2 cuisine, +2 region, +1 price).
+  const scoreClass =
+    typeof score === "number"
+      ? score >= 4
+        ? "bg-green-100 text-green-800"
+        : score >= 2
+        ? "bg-lime-100 text-lime-800"
+        : "bg-yellow-100 text-yellow-800"
+      : "";
   // Prefer an explicit display location, else fall back to covered regions.
   const locationLabel =
     display_location ??
@@ -78,12 +92,34 @@ export default function DealCard({
           </h2>
         </div>
 
-        {/* Show score only if score is a valid number */}
-        {typeof score === "number" ? (
-          <span className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700">
-            {score}
-          </span>
-        ) : null}
+        {/* Right side: optional score badge + save button */}
+        <div className="flex shrink-0 items-center gap-2">
+          {/* Match score, labeled and color-graded (green strong → yellow weak) */}
+          {typeof score === "number" ? (
+            <span
+              className={`rounded-full px-3 py-1 text-sm font-medium ${scoreClass}`}
+            >
+              Score: {score}
+            </span>
+          ) : null}
+
+          {/* Save/unsave button only renders when a handler is provided */}
+          {onToggleBookmark ? (
+            <button
+              type="button"
+              onClick={onToggleBookmark}
+              aria-pressed={bookmarked}
+              aria-label={bookmarked ? "Remove bookmark" : "Save deal"}
+              className={`rounded-full border px-3 py-1 text-sm font-medium ${
+                bookmarked
+                  ? "border-black bg-black text-white"
+                  : "border-gray-300 bg-white text-gray-700 hover:border-black"
+              }`}
+            >
+              {bookmarked ? "♥ Saved" : "♡ Save"}
+            </button>
+          ) : null}
+        </div>
       </div>
 
       {/* Optional deal description */}

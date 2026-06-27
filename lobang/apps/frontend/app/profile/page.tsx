@@ -153,16 +153,6 @@ export default function ProfilePage() {
         <h2 className="text-xl font-semibold">Preferences</h2>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Display name</label>
-          <input
-            type="text"
-            value={prefs?.display_name ?? ""}
-            onChange={(e) => patch({ display_name: e.target.value || null })}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-
-        <div>
           <label className="block text-sm font-medium mb-1">Max price</label>
           <select
             value={prefs?.max_price_level ?? ""}

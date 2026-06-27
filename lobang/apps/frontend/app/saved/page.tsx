@@ -1,6 +1,5 @@
-// For You page: personalized, preference-ranked deals for signed-in users.
-// Redirects to /login if there is no active session, so it can't be reached
-// (even by direct URL) while logged out.
+// Saved page: the deals the signed-in user has bookmarked. Redirects to /login
+// if there is no active session. Unsaving removes the deal from the list.
 
 "use client";
 
@@ -8,17 +7,15 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { getForYouDeals, type Deal } from "@/lib/api";
+import { getBookmarks, removeBookmark, type Deal } from "@/lib/api";
 import DealCard from "@/components/deal-card";
-import { useBookmarks } from "@/lib/use-bookmarks";
 
-export default function ForYouPage() {
+export default function SavedPage() {
   const router = useRouter();
   const [ready, setReady] = useState(false);
   const [deals, setDeals] = useState<Deal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { isBookmarked, toggleBookmark } = useBookmarks();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -27,12 +24,23 @@ export default function ForYouPage() {
         return;
       }
       setReady(true);
-      getForYouDeals()
+      getBookmarks()
         .then(setDeals)
-        .catch(() => setError("Couldn't load your deals. Please try again."))
+        .catch(() => setError("Couldn't load your saved deals. Please try again."))
         .finally(() => setLoading(false));
     });
   }, [router]);
+
+  async function unsave(dealId: number) {
+    const previous = deals;
+    // Optimistically drop it from the list, restore if the request fails.
+    setDeals((current) => current.filter((d) => d.id !== dealId));
+    try {
+      await removeBookmark(dealId);
+    } catch {
+      setDeals(previous);
+    }
+  }
 
   if (!ready || loading) {
     return <main className="max-w-2xl mx-auto p-6">Loading…</main>;
@@ -40,20 +48,18 @@ export default function ForYouPage() {
 
   return (
     <main className="max-w-2xl mx-auto p-6 space-y-4">
-      <h1 className="text-3xl font-bold">For You</h1>
-      <p className="text-gray-600">
-        Deals ranked by how well they match your preferences.
-      </p>
+      <h1 className="text-3xl font-bold">Saved</h1>
+      <p className="text-gray-600">Deals you&apos;ve bookmarked.</p>
 
       {error ? (
         <p className="text-red-600">{error}</p>
       ) : deals.length === 0 ? (
         <p className="text-gray-600">
-          No deals to show yet. Set your{" "}
-          <Link href="/profile" className="text-blue-600 hover:underline">
-            preferences
+          You haven&apos;t saved any deals yet. Browse{" "}
+          <Link href="/" className="text-blue-600 hover:underline">
+            deals
           </Link>{" "}
-          to get personalized picks.
+          and tap Save.
         </p>
       ) : (
         <div className="space-y-4">
@@ -61,8 +67,8 @@ export default function ForYouPage() {
             <DealCard
               key={deal.id}
               {...deal}
-              bookmarked={isBookmarked(deal.id)}
-              onToggleBookmark={() => toggleBookmark(deal.id)}
+              bookmarked
+              onToggleBookmark={() => unsave(deal.id)}
             />
           ))}
         </div>

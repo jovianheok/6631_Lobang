@@ -9,12 +9,15 @@ import { useEffect, useMemo, useState } from "react";
 import DealCard from "@/components/deal-card";
 import { getDeals, type Deal } from "@/lib/api";
 import { CUISINES, REGIONS, PRICE_LEVELS } from "@/lib/constants";
+import { useBookmarks } from "@/lib/use-bookmarks";
 
 export default function DealsBrowser() {
   const [deals, setDeals] = useState<Deal[] | null>(null);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const [cuisines, setCuisines] = useState<string[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const { signedIn, isBookmarked, toggleBookmark } = useBookmarks();
 
   useEffect(() => {
     getDeals()
@@ -50,7 +53,9 @@ export default function DealsBrowser() {
     });
   }, [deals, maxPrice, cuisines, regions]);
 
-  const hasFilters = maxPrice !== null || cuisines.length > 0 || regions.length > 0;
+  const activeCount =
+    (maxPrice !== null ? 1 : 0) + cuisines.length + regions.length;
+  const hasFilters = activeCount > 0;
 
   function clearAll() {
     setMaxPrice(null);
@@ -60,10 +65,29 @@ export default function DealsBrowser() {
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
-      <div className="space-y-4 rounded-2xl border border-gray-200 p-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold">Filters</h2>
+      {/* Filters (collapsible) */}
+      <div className="rounded-2xl border border-gray-200">
+        <div className="flex items-center justify-between p-4">
+          <button
+            type="button"
+            onClick={() => setFiltersOpen((open) => !open)}
+            aria-expanded={filtersOpen}
+            className="flex items-center gap-2 text-sm font-semibold"
+          >
+            <span
+              className={`inline-block transition-transform ${
+                filtersOpen ? "rotate-90" : ""
+              }`}
+            >
+              ▸
+            </span>
+            Filters
+            {activeCount > 0 && (
+              <span className="rounded-full bg-black px-2 py-0.5 text-xs font-medium text-white">
+                {activeCount}
+              </span>
+            )}
+          </button>
           {hasFilters && (
             <button onClick={clearAll} className="text-sm text-gray-500 underline">
               Clear
@@ -71,6 +95,8 @@ export default function DealsBrowser() {
           )}
         </div>
 
+        {filtersOpen && (
+        <div className="space-y-4 border-t border-gray-200 p-4">
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1">Max price</label>
           <select
@@ -118,6 +144,8 @@ export default function DealsBrowser() {
             ))}
           </div>
         </div>
+        </div>
+        )}
       </div>
 
       {/* Results */}
@@ -149,6 +177,10 @@ export default function DealsBrowser() {
                   discount_unit={deal.discount_unit}
                   distance_km={deal.distance_km}
                   score={deal.score}
+                  bookmarked={signedIn ? isBookmarked(deal.id) : undefined}
+                  onToggleBookmark={
+                    signedIn ? () => toggleBookmark(deal.id) : undefined
+                  }
                 />
               ))}
             </div>

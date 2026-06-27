@@ -51,11 +51,63 @@ export async function getDeals(): Promise<Deal[]> {
   return response.json();                           // Converts JSON into JavaScript objects
 }
 
+// Personalized, preference-ranked deals for the signed-in user. Requires auth.
+export async function getForYouDeals(): Promise<Deal[]> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/deals/for-you`, {
+    headers: await authHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch For You deals");
+  }
+
+  return response.json();
+}
+
+// --- Bookmarks ---------------------------------------------------------------
+
+// The deals the signed-in user has saved (mirrors GET /bookmarks → list[DealOut]).
+export async function getBookmarks(): Promise<Deal[]> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/bookmarks`, {
+    headers: await authHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch bookmarks");
+  }
+
+  return response.json();
+}
+
+// Save a deal for the current user. Backend treats a repeat save as a no-op.
+export async function addBookmark(dealId: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/bookmarks`, {
+    method: "POST",
+    headers: await authHeaders(),
+    body: JSON.stringify({ deal_id: dealId }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to save bookmark");
+  }
+}
+
+// Remove a saved deal. Deleting a missing bookmark is a no-op on the backend.
+export async function removeBookmark(dealId: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/bookmarks/${dealId}`, {
+    method: "DELETE",
+    headers: await authHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to remove bookmark");
+  }
+}
+
 // Shape of the preferences payload exchanged with the backend (mirrors
 // PreferenceOut / PreferenceUpdate on the FastAPI side).
 export type Preferences = {
   user_id: string;
-  display_name: string | null;
   max_price_level: number | null;
   cuisine_preferences: string[];
   preferred_regions: string[];
