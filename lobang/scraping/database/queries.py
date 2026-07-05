@@ -33,6 +33,7 @@ INSERT INTO deals (
     source_id,
     source_url,
     content_hash,
+    more_info_url,
     title,
     merchant_name,
     expiry_date,
@@ -47,7 +48,7 @@ INSERT INTO deals (
     location_mode,
     status
 )
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (source_id, content_hash) DO NOTHING
 RETURNING id;
 """
