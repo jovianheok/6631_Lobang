@@ -163,3 +163,8 @@ EXPLICIT_LOCATION_PATTERNS = [
     r"\b(all locations?(?:\s+except\s+[^\n.,;]+)?)\b", r"\b(selected locations?(?:\s+only)?)\b",
     r"\b(participating locations?(?:\s+only)?)\b",
 ]
+
+# _8_extract_more_info_url.py
+MORE_INFO_PATTERNS = [
+    r"\b(?:find out more|more info|order here|join here)\b\s*[:\-]\s*(https?://\S+|tco\.sg/\S+)",
+]
