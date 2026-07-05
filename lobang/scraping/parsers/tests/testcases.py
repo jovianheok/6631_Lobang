@@ -23,7 +23,8 @@ TEST_CASES = [
         "is_food_deal": True,
         "title": "Gelato Messina: Free Extra Gelato Scoop",
         "merchant_name": "Gelato Messina",
-        "expiry_date": date(2026, 6, 11)
+        "expiry_date": date(2026, 6, 11),
+        "more_info_url": "https://tco.sg/MfR1Jdg7J",
         }
 },
 
@@ -49,7 +50,8 @@ TEST_CASES = [
         "is_food_deal": True,
         "title": "Burger King: New Smoky Maple Mayo Burgers & Pocket Cameras",
         "merchant_name": "Burger King",
-        "expiry_date": date(2026, 7, 27)
+        "expiry_date": date(2026, 7, 27),
+        "more_info_url": "https://tco.sg/bkjunxsgfd",
         }
 },
 
@@ -74,7 +76,8 @@ TEST_CASES = [
         "is_food_deal": True,
         "title": "Starbucks: 1-for-1 on any Venti drink",
         "merchant_name": "Starbucks",
-        "expiry_date": date(2026, 6, 11)
+        "expiry_date": date(2026, 6, 11),
+        "more_info_url": "https://tco.sg/mxtMUfZEQ",
     },
 },
 
@@ -98,7 +101,8 @@ TEST_CASES = [
         "is_food_deal": True,
         "title": "Yu Xia Ge: $1.80 Prawn Noodle",
         "merchant_name": "Yu Xia Ge",
-        "expiry_date": None
+        "expiry_date": None,
+        "more_info_url": "https://tco.sg/CanMGCuXj",
     },
 },
 
@@ -121,7 +125,8 @@ TEST_CASES = [
         "is_food_deal": True,
         "title": "$1 Craze Hottis is back at 7-Eleven",
         "merchant_name": "7-Eleven",
-        "expiry_date": date(2026, 5, 19)
+        "expiry_date": date(2026, 5, 19),
+        "more_info_url": "https://tco.sg/1uptkV70H",
     },
 },
 
