@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS public.deals (
     source_url TEXT,
 
     content_hash TEXT NOT NULL,
+    more_info_url TEXT,
 
     title TEXT NOT NULL,
     merchant_name TEXT,
