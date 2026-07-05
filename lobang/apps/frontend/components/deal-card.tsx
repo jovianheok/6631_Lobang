@@ -11,6 +11,7 @@ type DealCardProps = {
   discount_value?: number | null;                 // Discount amount/value
   discount_unit?: string | null;                  // Discount unit (%, $, etc)
   source_url?: string | null;                     // External link to original sources
+  more_info_url?: string | null;                  // Merchant/site link parsed from the post
   distance_km?: number | null;                    // Distance from user in kilometres
   score?: number | null;                          // Ranking/relevance score
   cuisine?: string | null;                        // Cuisine label (Google Places)
@@ -33,6 +34,7 @@ export default function DealCard({
   discount_value,
   discount_unit,
   source_url,
+  more_info_url,
   distance_km,
   score,
   cuisine,
@@ -165,17 +167,29 @@ export default function DealCard({
         ) : null}
       </div>
 
-      {/* External source link */}
-      {source_url ? (               
-        <div className="mt-4">
-          <a
-            href={source_url}
-            target="_blank"
-            rel="noreferrer"
-            className="text-sm font-medium text-blue-600 hover:underline"
-          >
-            View source
-          </a>
+      {/* External links */}
+      {source_url || more_info_url ? (
+        <div className="mt-4 flex flex-wrap gap-4">
+          {source_url ? (
+            <a
+              href={source_url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm font-medium text-blue-600 hover:underline"
+            >
+              View source
+            </a>
+          ) : null}
+          {more_info_url ? (
+            <a
+              href={more_info_url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm font-medium text-blue-600 hover:underline"
+            >
+              More info
+            </a>
+          ) : null}
         </div>
       ) : null}
     </article>

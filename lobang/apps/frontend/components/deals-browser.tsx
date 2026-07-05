@@ -175,6 +175,7 @@ export default function DealsBrowser() {
                   location_name={deal.location_name}
                   discount_value={deal.discount_value}
                   discount_unit={deal.discount_unit}
+                  more_info_url={deal.more_info_url}
                   distance_km={deal.distance_km}
                   score={deal.score}
                   bookmarked={signedIn ? isBookmarked(deal.id) : undefined}
