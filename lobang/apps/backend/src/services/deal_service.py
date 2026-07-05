@@ -26,6 +26,7 @@ def get_deals() -> list[dict[str, Any]]:
                     title,
                     merchant_name,
                     source_url,
+                    more_info_url,
                     cuisine,
                     price_level,
                     address,
@@ -49,11 +50,12 @@ def get_deals() -> list[dict[str, Any]]:
                         "title": row[1],
                         "merchant_name": row[2],
                         "source_url": row[3],
-                        "cuisine": row[4],
-                        "price_level": row[5],
-                        "address": row[6],
-                        "covered_regions": row[7] or [],
-                        "display_location": row[8],
+                        "more_info_url": row[4],
+                        "cuisine": row[5],
+                        "price_level": row[6],
+                        "address": row[7],
+                        "covered_regions": row[8] or [],
+                        "display_location": row[9],
                     }
                 )
 
@@ -87,6 +89,7 @@ def get_for_you_deals(user_id: str) -> list[dict[str, Any]]:
                     title,
                     merchant_name,
                     source_url,
+                    more_info_url,
                     cuisine,
                     price_level,
                     address,
@@ -104,15 +107,15 @@ def get_for_you_deals(user_id: str) -> list[dict[str, Any]]:
     deals: list[dict[str, Any]] = []
 
     for row in rows:
-        price_level = row[5]
-        covered_regions = row[7] or []
+        price_level = row[6]
+        covered_regions = row[8] or []
 
         # Hard price filter, only when both sides are known.
         if max_price is not None and price_level is not None and price_level > max_price:
             continue
 
         score = 0.0
-        if pref_cuisines and row[4] in pref_cuisines:
+        if pref_cuisines and row[5] in pref_cuisines:
             score += 2.0
         if pref_regions and any(region in pref_regions for region in covered_regions):
             score += 2.0
@@ -125,11 +128,12 @@ def get_for_you_deals(user_id: str) -> list[dict[str, Any]]:
                 "title": row[1],
                 "merchant_name": row[2],
                 "source_url": row[3],
-                "cuisine": row[4],
+                "more_info_url": row[4],
+                "cuisine": row[5],
                 "price_level": price_level,
-                "address": row[6],
+                "address": row[7],
                 "covered_regions": covered_regions,
-                "display_location": row[8],
+                "display_location": row[9],
                 "score": score,
             }
         )
