@@ -25,6 +25,7 @@ export type Deal = {
   title: string;
   merchant_name: string | null;
   source_url: string | null;
+  more_info_url: string | null;
   cuisine: string | null;
   price_level: number | null;
   address: string | null;
