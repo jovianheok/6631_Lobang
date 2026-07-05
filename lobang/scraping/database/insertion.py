@@ -58,6 +58,7 @@ def save_parsed_deals(parsed_deals: list[dict], source_id: int):
                             source_id,
                             deal.get("source_url"),
                             deal.get("content_hash"),
+                            deal.get("more_info_url"),
                             deal.get("title"),
                             deal.get("merchant_name"),
                             deal.get("expiry_date"),
