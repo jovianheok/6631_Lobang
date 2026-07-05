@@ -14,6 +14,7 @@ from ._5_extract_location import extract_location_hint
 from ._6_extract_place_info import (fetch_place, extract_cuisine, extract_price_level,
                                      extract_address, estimate_outlet_coverage)
 from ._7_resolve_location import resolve_location_metadata
+from ._8_extract_more_info_url import extract_more_info_url
 
 def parse_raw_post(row: dict) -> Optional[dict]:
     text = normalize_text(row.get("raw_text", ""))
@@ -66,11 +67,15 @@ def parse_raw_post(row: dict) -> Optional[dict]:
     location_mode = location_meta["location_mode"]
     covered_regions = location_meta["covered_regions"]
 
+    # 8. Extract more_info_url
+    more_info_url = extract_more_info_url(text)
+
 
     return {
         "raw_deal_id": row.get("id"),
         "source_url": row.get("source_url"),
         "content_hash": row.get("content_hash"),
+        "more_info_url": more_info_url,
 
         "title": title,
         "merchant_name": merchant_name,
