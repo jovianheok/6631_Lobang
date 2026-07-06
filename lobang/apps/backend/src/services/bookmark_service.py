@@ -46,7 +46,15 @@ def get_bookmarked_deals(user_id: str) -> list[dict[str, Any]]:
             cur.execute(
                 """
                 SELECT
-                    d.id, d.title, d.merchant_name, d.source_url
+                    d.id,
+                    d.title,
+                    d.merchant_name,
+                    d.source_url,
+                    d.cuisine,
+                    d.price_level,
+                    d.address,
+                    d.covered_regions,
+                    d.display_location
                 FROM public.bookmarks b
                 JOIN public.deals d ON d.id = b.deal_id
                 WHERE b.user_id = %s
@@ -61,13 +69,11 @@ def get_bookmarked_deals(user_id: str) -> list[dict[str, Any]]:
                     "title": row[1],
                     "merchant_name": row[2],
                     "source_url": row[3],
-                    # Columns not yet present on public.deals; null until added.
-                    "description": None,
-                    "location_name": None,
-                    "discount_value": None,
-                    "discount_unit": None,
-                    "distance_km": None,
-                    "score": None,
+                    "cuisine": row[4],
+                    "price_level": row[5],
+                    "address": row[6],
+                    "covered_regions": row[7] or [],
+                    "display_location": row[8],
                 }
                 for row in rows
             ]
