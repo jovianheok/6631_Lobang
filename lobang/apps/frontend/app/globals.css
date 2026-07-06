@@ -19,6 +19,13 @@
   }
 }
 
+/* Always reserve the vertical scrollbar gutter so page width stays constant
+   whether or not a page is tall enough to scroll. Prevents deal cards from
+   changing width between short and long pages. */
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

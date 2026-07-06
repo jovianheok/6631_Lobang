@@ -102,11 +102,11 @@ export default function ProfilePage() {
   }
 
   if (loading) {
-    return <main className="max-w-2xl mx-auto p-6">Loading…</main>;
+    return <main className="w-full max-w-2xl mx-auto p-6">Loading…</main>;
   }
 
   return (
-    <main className="max-w-2xl mx-auto p-6 space-y-8">
+    <main className="w-full max-w-2xl mx-auto p-6 space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Profile</h1>
         <button onClick={signOut} className="text-sm text-gray-500 underline">
