@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import DealCard from "@/components/deal-card";
 import { getDeals, type Deal } from "@/lib/api";
 import { CUISINES, REGIONS, PRICE_LEVELS } from "@/lib/constants";
+import { regionFromCoords } from "@/lib/geo";
 import { useBookmarks } from "@/lib/use-bookmarks";
 
 export default function DealsBrowser() {
@@ -17,6 +18,8 @@ export default function DealsBrowser() {
   const [cuisines, setCuisines] = useState<string[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [locating, setLocating] = useState(false);
+  const [geoError, setGeoError] = useState<string | null>(null);
   const { signedIn, isBookmarked, toggleBookmark } = useBookmarks();
 
   useEffect(() => {
@@ -61,6 +64,32 @@ export default function DealsBrowser() {
     setMaxPrice(null);
     setCuisines([]);
     setRegions([]);
+    setGeoError(null);
+  }
+
+  // "Near me": resolve the user's live position to one of our five regions and
+  // drive the existing region filter with it. Opening the filter panel shows
+  // which region chip was selected, so the user can correct it manually.
+  function nearMe() {
+    if (!("geolocation" in navigator)) {
+      setGeoError("Location isn't supported by this browser. Pick a region below.");
+      setFiltersOpen(true);
+      return;
+    }
+    setLocating(true);
+    setGeoError(null);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setRegions([regionFromCoords(pos.coords.latitude, pos.coords.longitude)]);
+        setFiltersOpen(true);
+        setLocating(false);
+      },
+      () => {
+        setGeoError("Couldn't get your location. Pick a region below instead.");
+        setFiltersOpen(true);
+        setLocating(false);
+      }
+    );
   }
 
   return (
@@ -88,12 +117,26 @@ export default function DealsBrowser() {
               </span>
             )}
           </button>
-          {hasFilters && (
-            <button onClick={clearAll} className="text-sm text-gray-500 underline">
-              Clear
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={nearMe}
+              disabled={locating}
+              className="rounded-full border border-gray-300 px-3 py-1 text-sm font-medium text-gray-700 hover:border-black disabled:opacity-50"
+            >
+              {locating ? "Locating…" : "📍 Near me"}
             </button>
-          )}
+            {hasFilters && (
+              <button onClick={clearAll} className="text-sm text-gray-500 underline">
+                Clear
+              </button>
+            )}
+          </div>
         </div>
+
+        {geoError && (
+          <p className="px-4 pb-3 text-sm text-red-600">{geoError}</p>
+        )}
 
         {filtersOpen && (
         <div className="space-y-4 border-t border-gray-200 p-4">
