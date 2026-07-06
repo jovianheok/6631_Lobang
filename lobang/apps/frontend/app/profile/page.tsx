@@ -12,13 +12,22 @@ import {
   updatePreferences,
   type Preferences,
 } from "@/lib/api";
-import { CUISINES, REGIONS, PRICE_LEVELS } from "@/lib/constants";
+import { REGIONS, PRICE_LEVELS } from "@/lib/constants";
+import CuisinePicker, {
+  EMPTY_CUISINE_SELECTION,
+  expandCuisineSelection,
+  selectionFromCuisines,
+  type CuisineSelection,
+} from "@/components/cuisine-picker";
 
 export default function ProfilePage() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [prefs, setPrefs] = useState<Preferences | null>(null);
+  // Two-tier picker state; prefs.cuisine_preferences always holds its expanded
+  // specific-cuisine list, so saving needs no backend changes.
+  const [cuisineSel, setCuisineSel] = useState<CuisineSelection>(EMPTY_CUISINE_SELECTION);
 
   // Account fields
   const [email, setEmail] = useState("");
@@ -39,7 +48,9 @@ export default function ProfilePage() {
       }
       setEmail(data.session.user.email ?? "");
       try {
-        setPrefs(await getPreferences());
+        const loaded = await getPreferences();
+        setPrefs(loaded);
+        setCuisineSel(selectionFromCuisines(loaded.cuisine_preferences));
       } catch {
         setPrefsMsg("Could not load preferences.");
       } finally {
@@ -60,6 +71,13 @@ export default function ProfilePage() {
         ? current.filter((v) => v !== value)
         : [...current, value],
     } as Partial<Preferences>);
+  }
+
+  // Keep prefs.cuisine_preferences in sync with the picker as its expanded
+  // specific-cuisine list (a group with no chosen cuisines means all of them).
+  function changeCuisines(next: CuisineSelection) {
+    setCuisineSel(next);
+    patch({ cuisine_preferences: expandCuisineSelection(next) });
   }
 
   async function savePrefs(e: React.FormEvent) {
@@ -172,23 +190,7 @@ export default function ProfilePage() {
 
         <fieldset>
           <legend className="text-sm font-medium mb-2">Cuisines</legend>
-          <div className="flex flex-wrap gap-2">
-            {CUISINES.map((c) => {
-              const active = prefs?.cuisine_preferences.includes(c) ?? false;
-              return (
-                <button
-                  type="button"
-                  key={c}
-                  onClick={() => toggleInList("cuisine_preferences", c)}
-                  className={`px-3 py-1 rounded-full border text-sm ${
-                    active ? "bg-black text-white" : "bg-white text-gray-700"
-                  }`}
-                >
-                  {c}
-                </button>
-              );
-            })}
-          </div>
+          <CuisinePicker selection={cuisineSel} onChange={changeCuisines} />
         </fieldset>
 
         <fieldset>

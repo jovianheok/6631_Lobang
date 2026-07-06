@@ -8,14 +8,19 @@
 import { useEffect, useMemo, useState } from "react";
 import DealCard from "@/components/deal-card";
 import { getDeals, type Deal } from "@/lib/api";
-import { CUISINES, REGIONS, PRICE_LEVELS } from "@/lib/constants";
+import { REGIONS, PRICE_LEVELS } from "@/lib/constants";
+import CuisinePicker, {
+  EMPTY_CUISINE_SELECTION,
+  expandCuisineSelection,
+  type CuisineSelection,
+} from "@/components/cuisine-picker";
 import { regionFromCoords } from "@/lib/geo";
 import { useBookmarks } from "@/lib/use-bookmarks";
 
 export default function DealsBrowser() {
   const [deals, setDeals] = useState<Deal[] | null>(null);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
-  const [cuisines, setCuisines] = useState<string[]>([]);
+  const [cuisineSel, setCuisineSel] = useState<CuisineSelection>(EMPTY_CUISINE_SELECTION);
   const [regions, setRegions] = useState<string[]>([]);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [locating, setLocating] = useState(false);
@@ -36,6 +41,16 @@ export default function DealsBrowser() {
     setList(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
   }
 
+  // Concrete cuisines the group/specific selection stands for; null = no
+  // cuisine filter active.
+  const cuisineFilter = useMemo(
+    () =>
+      cuisineSel.groups.length > 0
+        ? new Set(expandCuisineSelection(cuisineSel))
+        : null,
+    [cuisineSel]
+  );
+
   const filtered = useMemo(() => {
     if (!deals) return [];
     return deals.filter((d) => {
@@ -44,8 +59,8 @@ export default function DealsBrowser() {
       if (maxPrice !== null && (d.price_level === null || d.price_level > maxPrice)) {
         return false;
       }
-      // Cuisine: deal's single cuisine must be among the selected ones.
-      if (cuisines.length > 0 && (d.cuisine === null || !cuisines.includes(d.cuisine))) {
+      // Cuisine: deal's single cuisine must be covered by the selection.
+      if (cuisineFilter && (d.cuisine === null || !cuisineFilter.has(d.cuisine))) {
         return false;
       }
       // Region: deal must cover at least one selected region.
@@ -54,15 +69,18 @@ export default function DealsBrowser() {
       }
       return true;
     });
-  }, [deals, maxPrice, cuisines, regions]);
+  }, [deals, maxPrice, cuisineFilter, regions]);
 
   const activeCount =
-    (maxPrice !== null ? 1 : 0) + cuisines.length + regions.length;
+    (maxPrice !== null ? 1 : 0) +
+    cuisineSel.groups.length +
+    cuisineSel.cuisines.length +
+    regions.length;
   const hasFilters = activeCount > 0;
 
   function clearAll() {
     setMaxPrice(null);
-    setCuisines([]);
+    setCuisineSel(EMPTY_CUISINE_SELECTION);
     setRegions([]);
     setGeoError(null);
   }
@@ -156,19 +174,7 @@ export default function DealsBrowser() {
 
         <div>
           <p className="text-xs font-medium text-gray-500 mb-2">Cuisine</p>
-          <div className="flex flex-wrap gap-2">
-            {CUISINES.map((c) => (
-              <button
-                key={c}
-                onClick={() => toggle(c, cuisines, setCuisines)}
-                className={`px-3 py-1 rounded-full border text-sm ${
-                  cuisines.includes(c) ? "bg-black text-white" : "bg-white text-gray-700"
-                }`}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
+          <CuisinePicker selection={cuisineSel} onChange={setCuisineSel} />
         </div>
 
         <div>
