@@ -144,3 +144,34 @@ export async function updatePreferences(
 
   return response.json();
 }
+
+// --- Submissions ---------------------------------------------------------------
+
+// Submit a user deal. The backend runs it through the same parsing/enrichment
+// pipeline as scraped Telegram posts and returns the published deal, or rejects
+// with 422 (not recognised as a food deal) / 409 (duplicate) — those messages
+// are surfaced to the caller.
+export async function submitDeal(payload: {
+  merchant_name: string;
+  description: string;
+  more_info_url?: string;
+}): Promise<Deal> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/submissions`, {
+    method: "POST",
+    headers: await authHeaders(),
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    let message = "Failed to submit deal. Please try again.";
+    try {
+      const body = await response.json();
+      if (typeof body.detail === "string") message = body.detail;
+    } catch {
+      // non-JSON error body; keep the generic message
+    }
+    throw new Error(message);
+  }
+
+  return response.json();
+}
