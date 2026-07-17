@@ -6,7 +6,30 @@ from playwright.sync_api import sync_playwright     # import Playwright to contr
 
 import hashlib      # import Python’s hashing library to create a unique fingerprint for each post
 
+from .image_utils import extract_background_image_url
+
 CHANNEL_URL = "https://t.me/s/sgfooddeals"      # Telegram channel page that we want to scrape          
+
+
+def extract_post_image_url(post) -> str | None:
+    """
+    Purpose: Extract the most likely image URL from a Telegram post.
+    """
+    photo_locator = post.locator(".tgme_widget_message_photo_wrap").first()
+    if photo_locator.count():
+        photo_style = photo_locator.get_attribute("style")
+        image_url = extract_background_image_url(photo_style)
+        if image_url:
+            return image_url
+
+        img_locator = photo_locator.locator("img").first()
+        if img_locator.count():
+            for attr in ("src", "data-src"):
+                candidate = img_locator.get_attribute(attr)
+                if candidate:
+                    return candidate.strip()
+
+    return None
 
 def make_content_hash(text: str, post_url: str) -> str:
     """
@@ -43,6 +66,7 @@ def scrape_telegram_channel():
                 
                 post_url = date_locator.get_attribute("href") if date_locator.count() else None     # Extract URL and date if date element exists
                 time_posted = date_locator.inner_text().strip() if date_locator.count() else None
+                image_url = extract_post_image_url(post)
 
                 if not text:        # Skip posts with empty text                        
                     continue
@@ -52,6 +76,7 @@ def scrape_telegram_channel():
                     "post_url": post_url,
                     "posted_at": time_posted,
                     "text": text,
+                    "image_url": image_url,
                     "content_hash": make_content_hash(text, post_url),
                 })
 
