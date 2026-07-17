@@ -46,7 +46,7 @@ def get_bookmarked_deals(user_id: str) -> list[dict[str, Any]]:
             cur.execute(
                 """
                 SELECT
-                    d.id, d.title, d.merchant_name, d.source_url, d.more_info_url
+                    d.id, d.title, d.merchant_name, d.source_url, d.more_info_url, d.image_url
                 FROM public.bookmarks b
                 JOIN public.deals d ON d.id = b.deal_id
                 WHERE b.user_id = %s
@@ -62,6 +62,7 @@ def get_bookmarked_deals(user_id: str) -> list[dict[str, Any]]:
                     "merchant_name": row[2],
                     "source_url": row[3],
                     "more_info_url": row[4],
+                    "image_url": row[5],
                     # Columns not yet present on public.deals; null until added.
                     "description": None,
                     "location_name": None,
