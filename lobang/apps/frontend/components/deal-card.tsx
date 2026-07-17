@@ -12,6 +12,7 @@ type DealCardProps = {
   discount_unit?: string | null;                  // Discount unit (%, $, etc)
   source_url?: string | null;                     // External link to original sources
   more_info_url?: string | null;                  // Merchant/site link parsed from the post
+  image_url?: string | null;                      // Telegram photo for the deal, if present
   distance_km?: number | null;                    // Distance from user in kilometres
   score?: number | null;                          // Ranking/relevance score
   cuisine?: string | null;                        // Cuisine label (Google Places)
@@ -35,6 +36,7 @@ export default function DealCard({
   discount_unit,
   source_url,
   more_info_url,
+  image_url,
   distance_km,
   score,
   cuisine,
@@ -76,6 +78,16 @@ export default function DealCard({
       - subtle shadow
     */
     <article className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"> 
+      {image_url ? (
+        <div className="mb-4 overflow-hidden rounded-xl bg-gray-100">
+          <img
+            src={image_url}
+            alt={title}
+            className="aspect-[4/3] w-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      ) : null}
 
       {/* Top section: merchant info + optional score badge */}
       <div className="flex items-start justify-between gap-4">
