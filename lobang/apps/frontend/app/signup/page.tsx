@@ -25,7 +25,7 @@
 
      if (submitted) {
       return (
-        <main className="max-w-sm mx-auto p-6">
+        <main className="w-full max-w-sm mx-auto p-6">
           <h1 className="text-2xl font-bold">Check your email</h1>
           <p className="mt-2 text-gray-600">
             We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.
@@ -35,7 +35,7 @@
     }
     
     return (
-      <main className="max-w-sm mx-auto p-6 space-y-4">
+      <main className="w-full max-w-sm mx-auto p-6 space-y-4">
         <h1 className="text-2xl font-bold">Create an account</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input type="email" placeholder="Email" value={email}

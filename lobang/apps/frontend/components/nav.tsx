@@ -43,6 +43,9 @@ export default function Nav() {
           <Link href="/" className={linkClass("/")}>Home</Link>
           <Link href="/for-you" className={linkClass("/for-you")}>For You</Link>
           {signedIn && (
+            <Link href="/submit" className={linkClass("/submit")}>Submit</Link>
+          )}
+          {signedIn && (
             <Link href="/saved" className={linkClass("/saved")}>Saved</Link>
           )}
           {signedIn && (

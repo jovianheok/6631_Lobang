@@ -46,6 +46,18 @@ export default function DealCard({
   bookmarked,
   onToggleBookmark,
 }: DealCardProps) {
+  // The scraper derives merchant_name from the title's leading prefix (e.g.
+  // "KFC: 20% off" -> merchant "KFC"), so the raw title often repeats the
+  // merchant. Strip a leading "<merchant><separator>" to avoid showing it twice.
+  const displayTitle = (() => {
+    if (!merchant_name) return title;
+    const trimmed = title.trimStart();
+    if (!trimmed.toLowerCase().startsWith(merchant_name.toLowerCase())) {
+      return title;
+    }
+    const rest = trimmed.slice(merchant_name.length).replace(/^\s*[:\-–—|]\s*/, "");
+    return rest.trim() || title;
+  })();
   // Render price level as $ signs (1 -> $, 4 -> $$$$); null = unknown.
   const priceLabel =
     typeof price_level === "number" && price_level > 0
@@ -95,15 +107,15 @@ export default function DealCard({
         {/* Left side: merchant name and deal title */}
         <div>
 
-          {/* Merchant name fallback if null/undefined */}
-          <p className="text-sm font-medium text-gray-500">
+          {/* Merchant name: primary heading, most prominent element */}
+          <h2 className="text-xl font-bold tracking-tight text-gray-900">
             {merchant_name ?? "Unknown merchant"}
-          </p>
-
-          {/* Main deal title */}
-          <h2 className="mt-1 text-xl font-semibold text-gray-900">
-            {title}
           </h2>
+
+          {/* Deal title: supporting line under the merchant */}
+          <p className="mt-1 text-base font-medium text-gray-700">
+            {displayTitle}
+          </p>
         </div>
 
         {/* Right side: optional score badge + save button */}

@@ -46,7 +46,7 @@ export default function LoginPage() {
 
   if (signedUp) {
     return (
-      <main className="max-w-sm mx-auto p-6 space-y-4 text-center">
+      <main className="w-full max-w-sm mx-auto p-6 space-y-4 text-center">
         <h1 className="text-2xl font-bold">Check your email</h1>
         <p className="text-gray-600">
           We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.
@@ -56,7 +56,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="max-w-sm mx-auto p-6 space-y-4">
+    <main className="w-full max-w-sm mx-auto p-6 space-y-4">
       <div className="flex border-b">
         <button
           className={`flex-1 pb-2 text-sm font-medium ${mode === "login" ? "border-b-2 border-black" : "text-gray-400"}`}
