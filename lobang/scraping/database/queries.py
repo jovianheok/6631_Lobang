@@ -21,6 +21,7 @@ SELECT
     id,
     source_url,
     raw_text,
+    raw_payload,
     content_hash,
     scraped_at
 FROM raw_deals
@@ -34,6 +35,7 @@ INSERT INTO deals (
     source_url,
     content_hash,
     more_info_url,
+    image_url,
     title,
     merchant_name,
     expiry_date,
@@ -48,7 +50,7 @@ INSERT INTO deals (
     location_mode,
     status
 )
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (source_id, content_hash) DO NOTHING
 RETURNING id;
 """

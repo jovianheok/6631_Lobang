@@ -18,6 +18,7 @@ from ._8_extract_more_info_url import extract_more_info_url
 
 def parse_raw_post(row: dict) -> Optional[dict]:
     text = normalize_text(row.get("raw_text", ""))
+    raw_payload = row.get("raw_payload") or {}
 
     if not text:
         return None
@@ -69,6 +70,7 @@ def parse_raw_post(row: dict) -> Optional[dict]:
 
     # 8. Extract more_info_url
     more_info_url = extract_more_info_url(text)
+    image_url = row.get("image_url") or raw_payload.get("image_url")
 
 
     return {
@@ -76,6 +78,7 @@ def parse_raw_post(row: dict) -> Optional[dict]:
         "source_url": row.get("source_url"),
         "content_hash": row.get("content_hash"),
         "more_info_url": more_info_url,
+        "image_url": image_url,
 
         "title": title,
         "merchant_name": merchant_name,
