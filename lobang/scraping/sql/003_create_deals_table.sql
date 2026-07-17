@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS public.deals (
 
     more_info_url TEXT,
     -- Parsed external link from "More info" / "Find out more" in the raw post
+    image_url TEXT,
+    -- Telegram post image URL when the post includes a photo
 
     title TEXT NOT NULL,
     merchant_name TEXT,
