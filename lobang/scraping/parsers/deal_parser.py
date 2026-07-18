@@ -9,7 +9,7 @@ from .utils import normalize_text
 from ._1_classification import is_food_deal
 from ._2_extract_title import extract_title
 from ._3_extract_merchant_name import extract_merchant_name
-from ._4_extract_expiry_date import extract_date_validity
+from ._4_extract_date_validity import extract_date_validity
 from ._5_extract_location import extract_location_hint
 from ._6_extract_place_info import (fetch_place, extract_cuisine, extract_price_level,
                                      extract_address, estimate_outlet_coverage)
