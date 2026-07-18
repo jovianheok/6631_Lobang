@@ -128,7 +128,7 @@ def submit_deal(
                 raw_deal_id = row[0]
 
                 # Same checks as Telegram posts: classification, title/merchant,
-                # expiry, location, Places enrichment, region coverage.
+                # date validity, location, Places enrichment, region coverage.
                 parsed = parse_raw_post(
                     {
                         "id": raw_deal_id,
@@ -150,8 +150,8 @@ def submit_deal(
                     """
                     INSERT INTO public.deals (
                         raw_deal_id, source_id, source_url, content_hash,
-                        more_info_url, title, merchant_name, expiry_date,
-                        display_until, cuisine, price_level, address,
+                        more_info_url, title, merchant_name, start_date,
+                        end_date, cuisine, price_level, address,
                         outlet_count, covered_regions, location_text,
                         display_location, location_mode, status
                     )
@@ -167,8 +167,8 @@ def submit_deal(
                         parsed.get("more_info_url"),
                         parsed.get("title"),
                         parsed.get("merchant_name"),
-                        parsed.get("expiry_date"),
-                        parsed.get("display_until"),
+                        parsed.get("start_date"),
+                        parsed.get("end_date"),
                         parsed.get("cuisine"),
                         parsed.get("price_level"),
                         parsed.get("address"),
@@ -190,6 +190,9 @@ def submit_deal(
                     "merchant_name": parsed.get("merchant_name"),
                     "source_url": parsed.get("source_url"),
                     "more_info_url": parsed.get("more_info_url"),
+                    "time_text": parsed.get("time_text"),
+                    "start_date": parsed.get("start_date"),
+                    "end_date": parsed.get("end_date"),
                     "cuisine": parsed.get("cuisine"),
                     "price_level": parsed.get("price_level"),
                     "address": parsed.get("address"),

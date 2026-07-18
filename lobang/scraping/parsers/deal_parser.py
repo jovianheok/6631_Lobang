@@ -3,18 +3,19 @@ Purpose: Orchestrate raw Telegram post parsing into a structured deal record.
 """
 
 from typing import Optional
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from .utils import normalize_text
 from ._1_classification import is_food_deal
 from ._2_extract_title import extract_title
 from ._3_extract_merchant_name import extract_merchant_name
-from ._4_extract_expiry_date import extract_expiry
+from ._4_extract_expiry_date import extract_date_validity
 from ._5_extract_location import extract_location_hint
 from ._6_extract_place_info import (fetch_place, extract_cuisine, extract_price_level,
                                      extract_address, estimate_outlet_coverage)
 from ._7_resolve_location import resolve_location_metadata
 from ._8_extract_more_info_url import extract_more_info_url
+from ._9_extract_time_validity import extract_time_text
 
 def parse_raw_post(row: dict) -> Optional[dict]:
     text = normalize_text(row.get("raw_text", ""))
@@ -36,10 +37,9 @@ def parse_raw_post(row: dict) -> Optional[dict]:
     # 3. Extract merchant name
     merchant_name = extract_merchant_name(text, title)
 
-    # 4. Extract expiry
+    # 4. Extract date validity
     scraped_at = row.get("scraped_at", "").date()
-    expiry_date = extract_expiry(text, scraped_at)
-    display_until = (expiry_date if expiry_date is not None else scraped_at + timedelta(days=30))
+    start_date, end_date = extract_date_validity(text, scraped_at)
 
     # 5. Extract location
     explicit_location = extract_location_hint(text)
@@ -71,6 +71,7 @@ def parse_raw_post(row: dict) -> Optional[dict]:
     # 8. Extract more_info_url
     more_info_url = extract_more_info_url(text)
     image_url = row.get("image_url") or raw_payload.get("image_url")
+    time_text = extract_time_text(text)
 
 
     return {
@@ -79,12 +80,13 @@ def parse_raw_post(row: dict) -> Optional[dict]:
         "content_hash": row.get("content_hash"),
         "more_info_url": more_info_url,
         "image_url": image_url,
+        "time_text": time_text,
 
         "title": title,
         "merchant_name": merchant_name,
 
-        "expiry_date": expiry_date,
-        "display_until": display_until,
+        "start_date": start_date,
+        "end_date": end_date,
 
         "cuisine": cuisine,
         "price_level": price_level,

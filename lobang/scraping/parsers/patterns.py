@@ -168,3 +168,8 @@ EXPLICIT_LOCATION_PATTERNS = [
 MORE_INFO_PATTERNS = [
     r"\b(?:find out more|more info|order here|join here)\b\s*[:\-]\s*(https?://\S+|tco\.sg/\S+)",
 ]
+
+# _9_extract_time_validity.py
+TIME_LINE_PATTERNS = [
+    r"^⏰\s*(.+)$",
+]

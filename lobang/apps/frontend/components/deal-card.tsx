@@ -13,6 +13,9 @@ type DealCardProps = {
   source_url?: string | null;                     // External link to original sources
   more_info_url?: string | null;                  // Merchant/site link parsed from the post
   image_url?: string | null;                      // Telegram photo for the deal, if present
+  time_text?: string | null;                      // Daily usage window such as "2PM - 8PM"
+  start_date?: string | null;                     // Date validity start
+  end_date?: string | null;                       // Date validity end
   distance_km?: number | null;                    // Distance from user in kilometres
   score?: number | null;                          // Ranking/relevance score
   cuisine?: string | null;                        // Cuisine label (Google Places)
@@ -37,6 +40,9 @@ export default function DealCard({
   source_url,
   more_info_url,
   image_url,
+  time_text,
+  start_date,
+  end_date,
   distance_km,
   score,
   cuisine,
@@ -80,6 +86,14 @@ export default function DealCard({
     (covered_regions && covered_regions.length > 0
       ? covered_regions.join(", ")
       : null);
+  const dateValidityLabel =
+    start_date && end_date
+      ? start_date === end_date
+        ? `Valid on ${end_date}`
+        : `Valid ${start_date} - ${end_date}`
+      : end_date
+      ? `Valid until ${end_date}`
+      : null;
   return (
     /*
       Outer card container
@@ -172,6 +186,18 @@ export default function DealCard({
         {locationLabel ? (
           <span className="rounded-full bg-gray-100 px-3 py-1 capitalize">
             {locationLabel}
+          </span>
+        ) : null}
+
+        {time_text ? (
+          <span className="rounded-full bg-amber-50 px-3 py-1 text-amber-800">
+            {time_text}
+          </span>
+        ) : null}
+
+        {dateValidityLabel ? (
+          <span className="rounded-full bg-sky-50 px-3 py-1 text-sky-800">
+            {dateValidityLabel}
           </span>
         ) : null}
 

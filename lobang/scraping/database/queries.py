@@ -36,10 +36,11 @@ INSERT INTO deals (
     content_hash,
     more_info_url,
     image_url,
+    time_text,
     title,
     merchant_name,
-    expiry_date,
-    display_until,
+    start_date,
+    end_date,
     cuisine,
     price_level,
     address,
@@ -50,7 +51,7 @@ INSERT INTO deals (
     location_mode,
     status
 )
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (source_id, content_hash) DO NOTHING
 RETURNING id;
 """
@@ -60,6 +61,6 @@ UPDATE deals
 SET status = 'expired',
     expired_at = NOW()
 WHERE status = 'active'
-  AND display_until < CURRENT_DATE
+  AND end_date < CURRENT_DATE
 RETURNING id;
 """

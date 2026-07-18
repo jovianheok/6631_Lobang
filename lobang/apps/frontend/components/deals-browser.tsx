@@ -226,6 +226,9 @@ export default function DealsBrowser() {
                   discount_unit={deal.discount_unit}
                   more_info_url={deal.more_info_url}
                   image_url={deal.image_url}
+                  time_text={deal.time_text}
+                  start_date={deal.start_date}
+                  end_date={deal.end_date}
                   distance_km={deal.distance_km}
                   score={deal.score}
                   bookmarked={signedIn ? isBookmarked(deal.id) : undefined}

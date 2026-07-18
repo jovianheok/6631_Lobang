@@ -12,6 +12,9 @@ class DealOut(BaseModel):
     source_url: Optional[str] = None
     more_info_url: Optional[str] = None
     image_url: Optional[str] = None
+    time_text: Optional[str] = None
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
 
     # Enrichment fields (see deals table / Google Places pipeline)
     cuisine: Optional[str] = None

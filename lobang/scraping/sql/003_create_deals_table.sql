@@ -19,15 +19,17 @@ CREATE TABLE IF NOT EXISTS public.deals (
     -- Parsed external link from "More info" / "Find out more" in the raw post
     image_url TEXT,
     -- Telegram post image URL when the post includes a photo
+    time_text TEXT,
+    -- Daily time window such as "2PM - 8PM" or "From 4PM"
 
     title TEXT NOT NULL,
     merchant_name TEXT,
 
-    expiry_date DATE,
-    -- Actual expiry extracted from the post
+    start_date DATE NOT NULL,
+    -- Date validity start; defaults to scrape date when unspecified
 
-    display_until DATE NOT NULL,
-    -- Hide the deal after this date
+    end_date DATE NOT NULL,
+    -- Date validity end; defaults to scrape date + 30 days when unspecified
 
     cuisine TEXT,
     price_level INT,
@@ -72,6 +74,6 @@ CREATE INDEX IF NOT EXISTS deals_status_idx
 ON public.deals (status);
 -- Speed up filtering active deals
 
-CREATE INDEX IF NOT EXISTS deals_display_until_idx
-ON public.deals (display_until);
+CREATE INDEX IF NOT EXISTS deals_end_date_idx
+ON public.deals (end_date);
 -- Speed up expiry updates
