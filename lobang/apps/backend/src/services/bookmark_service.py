@@ -4,6 +4,7 @@ Purpose: Create, delete, and list a user's bookmarked deals.
 
 from typing import Any
 from src.database.connection import get_conn
+from src.services.vote_service import get_vote_maps
 
 
 def add_bookmark(user_id: str, deal_id: int) -> None:
@@ -68,8 +69,14 @@ def get_bookmarked_deals(user_id: str) -> list[dict[str, Any]]:
                 (user_id,),
             )
             rows = cur.fetchall()
+            deal_ids = [row[0] for row in rows]
+            vote_counts, user_votes = get_vote_maps(deal_ids, user_id)
             return [
                 {
+                    **vote_counts.get(
+                        row[0],
+                        {"upvote_count": 0, "downvote_count": 0, "community_score": 0},
+                    ),
                     "id": row[0],
                     "title": row[1],
                     "merchant_name": row[2],
@@ -84,6 +91,7 @@ def get_bookmarked_deals(user_id: str) -> list[dict[str, Any]]:
                     "address": row[11],
                     "covered_regions": row[12] or [],
                     "display_location": row[13],
+                    "user_vote": user_votes.get(row[0]),
                     # Columns not yet present on public.deals; null until added.
                     "description": None,
                     "location_name": None,

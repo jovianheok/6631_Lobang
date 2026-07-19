@@ -15,6 +15,10 @@ class DealOut(BaseModel):
     time_text: Optional[str] = None
     start_date: Optional[str] = None
     end_date: Optional[str] = None
+    upvote_count: int = 0
+    downvote_count: int = 0
+    community_score: int = 0
+    user_vote: Optional[int] = None
 
     # Enrichment fields (see deals table / Google Places pipeline)
     cuisine: Optional[str] = None

@@ -212,7 +212,8 @@ export default function DealsBrowser() {
             <div className="space-y-4">
               {filtered.map((deal) => (
                 <DealCard
-                  key={deal.id}
+                  key={`${deal.id}-${deal.user_vote ?? "n"}-${deal.upvote_count}-${deal.downvote_count}`}
+                  id={deal.id}
                   title={deal.title}
                   merchant_name={deal.merchant_name}
                   source_url={deal.source_url}
@@ -229,6 +230,11 @@ export default function DealsBrowser() {
                   time_text={deal.time_text}
                   start_date={deal.start_date}
                   end_date={deal.end_date}
+                  upvote_count={deal.upvote_count}
+                  downvote_count={deal.downvote_count}
+                  community_score={deal.community_score}
+                  user_vote={deal.user_vote}
+                  canVote={signedIn}
                   distance_km={deal.distance_km}
                   score={deal.score}
                   bookmarked={signedIn ? isBookmarked(deal.id) : undefined}

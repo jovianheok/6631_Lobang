@@ -59,8 +59,9 @@ export default function ForYouPage() {
         <div className="space-y-4">
           {deals.map((deal) => (
             <DealCard
-              key={deal.id}
+              key={`${deal.id}-${deal.user_vote ?? "n"}-${deal.upvote_count}-${deal.downvote_count}`}
               {...deal}
+              canVote
               bookmarked={isBookmarked(deal.id)}
               onToggleBookmark={() => toggleBookmark(deal.id)}
             />

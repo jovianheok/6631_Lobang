@@ -21,6 +21,7 @@ _jwks_client = PyJWKClient(f"{SUPABASE_URL}/auth/v1/.well-known/jwks.json")
 
 # Parses the "Authorization: Bearer <token>" header; auto-401s if it's missing
 bearer_scheme = HTTPBearer()
+optional_bearer_scheme = HTTPBearer(auto_error=False)
 
 
 def get_current_user(
@@ -54,3 +55,16 @@ def get_current_user(
       )
 
   return user_id
+
+
+def get_optional_current_user(
+  credentials: HTTPAuthorizationCredentials | None = Depends(optional_bearer_scheme),
+) -> str | None:
+  """
+  Validate an optional access token and return the Supabase user id when
+  present. Returns None when the request is anonymous.
+  """
+  if credentials is None:
+      return None
+
+  return get_current_user(credentials)

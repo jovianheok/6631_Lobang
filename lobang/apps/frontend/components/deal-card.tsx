@@ -1,9 +1,16 @@
+"use client";
+
+import { useState } from "react";
+
+import { removeDealVote, setDealVote } from "@/lib/api";
+
 /*
   Props definition for the DealCard component.
   '?': optional
   '| null': value can explicitly be null
 */
 type DealCardProps = {
+  id: number;                                     // Deal id
   title: string;                                  // Main deal title
   merchant_name?: string | null;                  // Store name or merchant name
   description?: string | null;                    // Short description of the deal
@@ -16,6 +23,11 @@ type DealCardProps = {
   time_text?: string | null;                      // Daily usage window such as "2PM - 8PM"
   start_date?: string | null;                     // Date validity start
   end_date?: string | null;                       // Date validity end
+  upvote_count?: number;                          // Community upvote count
+  downvote_count?: number;                        // Community downvote count
+  community_score?: number;                       // Net community score
+  user_vote?: 1 | -1 | null;                      // Current user's vote on the deal
+  canVote?: boolean;                              // Whether the current user can vote
   distance_km?: number | null;                    // Distance from user in kilometres
   score?: number | null;                          // Ranking/relevance score
   cuisine?: string | null;                        // Cuisine label (Google Places)
@@ -31,6 +43,7 @@ type DealCardProps = {
   Functional React component that displays a single deal card.
 */
 export default function DealCard({
+  id: dealId,
   title,
   merchant_name,
   description,
@@ -43,6 +56,10 @@ export default function DealCard({
   time_text,
   start_date,
   end_date,
+  upvote_count = 0,
+  downvote_count = 0,
+  user_vote = null,
+  canVote = false,
   distance_km,
   score,
   cuisine,
@@ -94,6 +111,52 @@ export default function DealCard({
       : end_date
       ? `Valid until ${end_date}`
       : null;
+  const [voteState, setVoteState] = useState({
+    upvoteCount: upvote_count,
+    downvoteCount: downvote_count,
+    userVote: user_vote,
+  });
+  const [votePending, setVotePending] = useState(false);
+
+  async function handleVote(nextVote: 1 | -1) {
+    if (!canVote || votePending) {
+      return;
+    }
+
+    const previous = voteState;
+    const optimistic = { ...voteState };
+
+    if (optimistic.userVote === nextVote) {
+      if (nextVote === 1) optimistic.upvoteCount -= 1;
+      else optimistic.downvoteCount -= 1;
+      optimistic.userVote = null;
+    } else {
+      if (optimistic.userVote === 1) optimistic.upvoteCount -= 1;
+      if (optimistic.userVote === -1) optimistic.downvoteCount -= 1;
+      if (nextVote === 1) optimistic.upvoteCount += 1;
+      else optimistic.downvoteCount += 1;
+      optimistic.userVote = nextVote;
+    }
+
+    setVoteState(optimistic);
+    setVotePending(true);
+
+    try {
+      const summary =
+        previous.userVote === nextVote
+          ? await removeDealVote(dealId)
+          : await setDealVote(dealId, nextVote);
+      setVoteState({
+        upvoteCount: summary.upvote_count,
+        downvoteCount: summary.downvote_count,
+        userVote: summary.user_vote,
+      });
+    } catch {
+      setVoteState(previous);
+    } finally {
+      setVotePending(false);
+    }
+  }
   return (
     /*
       Outer card container
@@ -214,6 +277,38 @@ export default function DealCard({
           <span className="rounded-full bg-gray-100 px-3 py-1">
             {distance_km.toFixed(1)} km away
           </span>
+        ) : null}
+      </div>
+
+      <div className="mt-4 flex items-center gap-3 text-sm">
+        <button
+          type="button"
+          onClick={() => void handleVote(1)}
+          disabled={!canVote || votePending}
+          aria-pressed={voteState.userVote === 1}
+          className={`rounded-full border px-3 py-1 font-medium ${
+            voteState.userVote === 1
+              ? "border-emerald-700 bg-emerald-50 text-emerald-800"
+              : "border-gray-300 text-gray-700"
+          } disabled:opacity-50`}
+        >
+          ▲ {voteState.upvoteCount}
+        </button>
+        <button
+          type="button"
+          onClick={() => void handleVote(-1)}
+          disabled={!canVote || votePending}
+          aria-pressed={voteState.userVote === -1}
+          className={`rounded-full border px-3 py-1 font-medium ${
+            voteState.userVote === -1
+              ? "border-rose-700 bg-rose-50 text-rose-800"
+              : "border-gray-300 text-gray-700"
+          } disabled:opacity-50`}
+        >
+          ▼ {voteState.downvoteCount}
+        </button>
+        {!canVote ? (
+          <span className="text-gray-500">Sign in to vote</span>
         ) : null}
       </div>
 

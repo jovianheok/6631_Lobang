@@ -19,6 +19,17 @@ async function authHeaders(): Promise<Record<string, string>> {
   };
 }
 
+async function optionalAuthHeaders(): Promise<Record<string, string> | undefined> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (!token) {
+    return undefined;
+  }
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+}
+
 // Shape of a deal returned by the backend (mirrors DealOut on the FastAPI side).
 export type Deal = {
   id: number;
@@ -30,6 +41,10 @@ export type Deal = {
   time_text: string | null;
   start_date: string | null;
   end_date: string | null;
+  upvote_count: number;
+  downvote_count: number;
+  community_score: number;
+  user_vote: 1 | -1 | null;
   cuisine: string | null;
   price_level: number | null;
   address: string | null;
@@ -44,9 +59,20 @@ export type Deal = {
   score: number | null;
 };
 
+export type DealVoteSummary = {
+  deal_id: number;
+  upvote_count: number;
+  downvote_count: number;
+  community_score: number;
+  user_vote: 1 | -1 | null;
+};
+
 export async function getDeals(): Promise<Deal[]> {
   const response = await fetch(                     // Sends HTTP request to backend and awaits backend response
-    `${API_BASE_URL}/api/v1/deals`
+    `${API_BASE_URL}/api/v1/deals`,
+    {
+      headers: await optionalAuthHeaders(),
+    }
   );
 
   if (!response.ok) {
@@ -144,6 +170,36 @@ export async function updatePreferences(
 
   if (!response.ok) {
     throw new Error("Failed to update preferences");
+  }
+
+  return response.json();
+}
+
+export async function setDealVote(
+  dealId: number,
+  vote: 1 | -1
+): Promise<DealVoteSummary> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/deals/${dealId}/vote`, {
+    method: "POST",
+    headers: await authHeaders(),
+    body: JSON.stringify({ vote }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to save vote");
+  }
+
+  return response.json();
+}
+
+export async function removeDealVote(dealId: number): Promise<DealVoteSummary> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/deals/${dealId}/vote`, {
+    method: "DELETE",
+    headers: await authHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to remove vote");
   }
 
   return response.json();

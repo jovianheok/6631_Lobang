@@ -8,10 +8,11 @@ import psycopg2
 from dotenv import load_dotenv
 from src.database.connection import get_conn
 from src.services.preference_service import get_or_create_preferences
+from src.services.vote_service import get_vote_maps
 
 load_dotenv()
 
-def get_deals() -> list[dict[str, Any]]:
+def get_deals(user_id: str | None = None) -> list[dict[str, Any]]:
     """
     Purpose: Retrieve deal data from the database and convert to Python objects
     """
@@ -45,9 +46,16 @@ def get_deals() -> list[dict[str, Any]]:
 
             rows = cur.fetchall()       # Fetch all query results
 
+            deal_ids = [row[0] for row in rows]
+            vote_counts, user_votes = get_vote_maps(deal_ids, user_id)
+
             deals: list[dict[str, Any]] = []        # Store processed deals as a list of dictionaries
 
             for row in rows:
+                vote_data = vote_counts.get(
+                    row[0],
+                    {"upvote_count": 0, "downvote_count": 0, "community_score": 0},
+                )
                 deals.append(       # Convert each database row into a dictionary
                     {
                         "id": row[0],
@@ -64,6 +72,10 @@ def get_deals() -> list[dict[str, Any]]:
                         "address": row[11],
                         "covered_regions": row[12] or [],
                         "display_location": row[13],
+                        "upvote_count": vote_data["upvote_count"],
+                        "downvote_count": vote_data["downvote_count"],
+                        "community_score": vote_data["community_score"],
+                        "user_vote": user_votes.get(row[0]),
                     }
                 )
 
@@ -116,11 +128,18 @@ def get_for_you_deals(user_id: str) -> list[dict[str, Any]]:
     finally:
         conn.close()
 
+    deal_ids = [row[0] for row in rows]
+    vote_counts, user_votes = get_vote_maps(deal_ids, user_id)
+
     deals: list[dict[str, Any]] = []
 
     for row in rows:
         price_level = row[10]
         covered_regions = row[12] or []
+        vote_data = vote_counts.get(
+            row[0],
+            {"upvote_count": 0, "downvote_count": 0, "community_score": 0},
+        )
 
         # Hard price filter, only when both sides are known.
         if max_price is not None and price_level is not None and price_level > max_price:
@@ -133,6 +152,9 @@ def get_for_you_deals(user_id: str) -> list[dict[str, Any]]:
             score += 2.0
         if max_price is not None and price_level is not None and price_level <= max_price:
             score += 1.0
+        total_votes = vote_data["upvote_count"] + vote_data["downvote_count"]
+        if total_votes >= 5:
+            score += max(min(vote_data["community_score"], 3), -3) * 0.25
 
         deals.append(
             {
@@ -150,6 +172,10 @@ def get_for_you_deals(user_id: str) -> list[dict[str, Any]]:
                 "address": row[11],
                 "covered_regions": covered_regions,
                 "display_location": row[13],
+                "upvote_count": vote_data["upvote_count"],
+                "downvote_count": vote_data["downvote_count"],
+                "community_score": vote_data["community_score"],
+                "user_vote": user_votes.get(row[0]),
                 "score": score,
             }
         )

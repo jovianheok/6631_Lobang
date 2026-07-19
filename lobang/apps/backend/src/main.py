@@ -7,6 +7,7 @@ from src.routes.preference_routes import preference_router
 from src.routes.bookmark_routes import bookmark_router
 from src.routes.deal_routes  import deal_router
 from src.routes.submission_routes import submission_router
+from src.routes.vote_routes import vote_router
 
 app = FastAPI(title="Lobang API")       # Create a FastAPI application
 
@@ -35,3 +36,4 @@ app.include_router(deal_router, prefix="/api/v1")
 app.include_router(preference_router, prefix="/api/v1")
 app.include_router(bookmark_router, prefix="/api/v1")
 app.include_router(submission_router, prefix="/api/v1")
+app.include_router(vote_router, prefix="/api/v1")
