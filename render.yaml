@@ -1,0 +1,30 @@
+# Render Blueprint for the Lobang FastAPI backend.
+# In the Render dashboard: New > Blueprint, connect the GitHub repo, pick the
+# branch (dev), and Render reads this file. It will prompt for every env var
+# marked `sync: false` (the secrets are never committed to git).
+services:
+  - type: web
+    name: lobang-api
+    runtime: python
+    plan: free
+    rootDir: lobang/apps/backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn src.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      # Postgres connection string (Supabase). Prompted at deploy time.
+      - key: DATABASE_URL
+        sync: false
+      # Supabase project URL, used to fetch the JWKS for verifying auth tokens.
+      - key: SUPABASE_URL
+        sync: false
+      # Google Places key, used by the user-submission parsing pipeline.
+      - key: GOOGLE_PLACES_API_KEY
+        sync: false
+      # Comma-separated extra browser origins allowed to call the API.
+      # *.vercel.app is already allowed by regex in main.py, so this is only
+      # needed for a custom domain later.
+      - key: FRONTEND_ORIGINS
+        value: "https://lobang.vercel.app"
