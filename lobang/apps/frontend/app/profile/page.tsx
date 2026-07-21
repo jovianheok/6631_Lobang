@@ -86,7 +86,14 @@ export default function ProfilePage() {
     setSavingPrefs(true);
     setPrefsMsg("");
     try {
-      const { user_id: _omit, ...payload } = prefs;
+      const payload = {
+        max_price_level: prefs.max_price_level,
+        cuisine_preferences: prefs.cuisine_preferences,
+        preferred_regions: prefs.preferred_regions,
+        home_latitude: prefs.home_latitude,
+        home_longitude: prefs.home_longitude,
+        max_distance_km: prefs.max_distance_km,
+      };
       const saved = await updatePreferences(payload);
       setPrefs(saved);
       setPrefsMsg("Preferences saved.");

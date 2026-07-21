@@ -169,6 +169,8 @@ export default function DealCard({
     <article className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"> 
       {image_url ? (
         <div className="mb-4 overflow-hidden rounded-xl bg-gray-100">
+          {/* Telegram image hosts can vary, so we intentionally keep a plain img here. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={image_url}
             alt={title}
