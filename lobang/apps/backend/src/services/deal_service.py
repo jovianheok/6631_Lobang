@@ -2,11 +2,10 @@
 Purpose: Query the database and prepare data
 """
 
-import os
 from typing import Any      # type hints for better readability and autocomplete support
-import psycopg2
 from dotenv import load_dotenv
 from src.database.connection import get_conn
+from src.services.deal_payloads import build_deal_payload, DEFAULT_VOTE_DATA
 from src.services.preference_service import get_or_create_preferences
 from src.services.vote_service import get_vote_maps
 
@@ -49,37 +48,10 @@ def get_deals(user_id: str | None = None) -> list[dict[str, Any]]:
             deal_ids = [row[0] for row in rows]
             vote_counts, user_votes = get_vote_maps(deal_ids, user_id)
 
-            deals: list[dict[str, Any]] = []        # Store processed deals as a list of dictionaries
-
-            for row in rows:
-                vote_data = vote_counts.get(
-                    row[0],
-                    {"upvote_count": 0, "downvote_count": 0, "community_score": 0},
-                )
-                deals.append(       # Convert each database row into a dictionary
-                    {
-                        "id": row[0],
-                        "title": row[1],
-                        "merchant_name": row[2],
-                        "source_url": row[3],
-                        "more_info_url": row[4],
-                        "image_url": row[5],
-                        "time_text": row[6],
-                        "start_date": row[7],
-                        "end_date": row[8],
-                        "cuisine": row[9],
-                        "price_level": row[10],
-                        "address": row[11],
-                        "covered_regions": row[12] or [],
-                        "display_location": row[13],
-                        "upvote_count": vote_data["upvote_count"],
-                        "downvote_count": vote_data["downvote_count"],
-                        "community_score": vote_data["community_score"],
-                        "user_vote": user_votes.get(row[0]),
-                    }
-                )
-
-            return deals
+            return [
+                build_deal_payload(row, vote_counts=vote_counts, user_votes=user_votes)
+                for row in rows
+            ]
 
     finally:
         conn.close()
@@ -136,10 +108,7 @@ def get_for_you_deals(user_id: str) -> list[dict[str, Any]]:
     for row in rows:
         price_level = row[10]
         covered_regions = row[12] or []
-        vote_data = vote_counts.get(
-            row[0],
-            {"upvote_count": 0, "downvote_count": 0, "community_score": 0},
-        )
+        vote_data = vote_counts.get(row[0], DEFAULT_VOTE_DATA)
 
         # Hard price filter, only when both sides are known.
         if max_price is not None and price_level is not None and price_level > max_price:
@@ -157,27 +126,12 @@ def get_for_you_deals(user_id: str) -> list[dict[str, Any]]:
             score += max(min(vote_data["community_score"], 3), -3) * 0.25
 
         deals.append(
-            {
-                "id": row[0],
-                "title": row[1],
-                "merchant_name": row[2],
-                "source_url": row[3],
-                "more_info_url": row[4],
-                "image_url": row[5],
-                "time_text": row[6],
-                "start_date": row[7],
-                "end_date": row[8],
-                "cuisine": row[9],
-                "price_level": price_level,
-                "address": row[11],
-                "covered_regions": covered_regions,
-                "display_location": row[13],
-                "upvote_count": vote_data["upvote_count"],
-                "downvote_count": vote_data["downvote_count"],
-                "community_score": vote_data["community_score"],
-                "user_vote": user_votes.get(row[0]),
-                "score": score,
-            }
+            build_deal_payload(
+                row,
+                vote_counts=vote_counts,
+                user_votes=user_votes,
+                score=score,
+            )
         )
 
     # Stable sort keeps the created_at DESC ordering within equal scores.

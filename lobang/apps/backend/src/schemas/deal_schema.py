@@ -3,6 +3,7 @@ Purpose: Describe what a deal object should look like when returned to the clien
 """
 
 from pydantic import BaseModel      # to create data validation schemas
+from pydantic import Field
 from typing import Optional     # Optional type allows values to be None/null
 
 class DealOut(BaseModel):
@@ -24,7 +25,7 @@ class DealOut(BaseModel):
     cuisine: Optional[str] = None
     price_level: Optional[int] = None          # 0..4
     address: Optional[str] = None
-    covered_regions: list[str] = []            # SG regions the merchant covers
+    covered_regions: list[str] = Field(default_factory=list)  # SG regions the merchant covers
     display_location: Optional[str] = None     # frontend-friendly location label
 
     # Not (yet) stored on deals; kept optional so existing UI keeps working
