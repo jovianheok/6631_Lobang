@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS public.bookmarks (
 );
 
 CREATE INDEX IF NOT EXISTS idx_bookmarks_user_id
-    ON public.bookmarks (user_id);
+ON public.bookmarks (user_id);
 
 ALTER TABLE public.bookmarks ENABLE ROW LEVEL SECURITY;
 

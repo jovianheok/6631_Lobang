@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS public.raw_deals (
 
     source_id BIGINT NOT NULL
         REFERENCES public.sources(id) ON DELETE RESTRICT,
-    -- Source channel
+    -- Source channel or submission origin
 
     source_url TEXT NOT NULL,
 
@@ -17,8 +17,11 @@ CREATE TABLE IF NOT EXISTS public.raw_deals (
     content_hash TEXT NOT NULL,
     -- Used for deduplication
 
-    scraped_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    scraped_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     -- When the post was scraped
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    -- When the raw row was inserted
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS raw_deals_source_id_content_hash_idx

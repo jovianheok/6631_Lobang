@@ -1,6 +1,9 @@
-insert into public.sources (platform, channel_name, url)    -- Insert a new row into the sources table
-values ('telegram',                                         --   specifying platform,
-        'sgfooddeals',                                      --   channel_name,
-        'https://t.me/s/sgfooddeals'                        --   and url
+-- Purpose: Seed default scraping sources
+
+INSERT INTO public.sources (platform, channel_name, url)
+VALUES (
+    'telegram',
+    'sgfooddeals',
+    'https://t.me/s/sgfooddeals'
 )
-on conflict (platform, channel_name) do nothing;            -- Skip the insert if inserting the row violates the unique constraint
+ON CONFLICT (platform, channel_name) DO NOTHING;

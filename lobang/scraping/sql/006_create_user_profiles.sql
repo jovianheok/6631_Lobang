@@ -5,7 +5,7 @@
 CREATE TABLE IF NOT EXISTS public.user_profiles (
     user_id UUID PRIMARY KEY
         REFERENCES auth.users(id) ON DELETE CASCADE,
-        -- One profile per authenticated user; remove profile if the account is deleted
+    -- One profile per authenticated user; remove profile if the account is deleted
 
     display_name TEXT,
 
@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS public.user_profiles (
     preferred_regions TEXT[] NOT NULL DEFAULT '{}',
 
     -- Location, distance model: a home point + how far the user will travel
-    home_latitude  DOUBLE PRECISION,
+    home_latitude DOUBLE PRECISION,
     home_longitude DOUBLE PRECISION,
-    max_distance_km NUMERIC(6,2),
+    max_distance_km NUMERIC(6, 2),
 
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

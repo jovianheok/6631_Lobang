@@ -1,10 +1,14 @@
-create table if not exists public.sources (
+-- Purpose: Create 'sources' table to store upstream scraping sources
 
-    id bigserial primary key,       -- Create a column named 'id', 'primary key': makes id the unique identifier for each row
-    platform text not null,
-    channel_name text not null,
-    url text,
-    created_at timestamptz not null default now(),
+CREATE TABLE IF NOT EXISTS public.sources (
+    id BIGSERIAL PRIMARY KEY,
 
-    unique(platform, channel_name)      -- Create a unique index behind the scenes to enforce the constraint
+    platform TEXT NOT NULL,
+    channel_name TEXT NOT NULL,
+    url TEXT,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    CONSTRAINT sources_platform_channel_name_uniq
+        UNIQUE (platform, channel_name)
 );

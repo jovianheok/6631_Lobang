@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS public.deals (
 
     source_id BIGINT NOT NULL
         REFERENCES public.sources(id) ON DELETE RESTRICT,
-    -- Source channel
+    -- Source channel or submission origin
 
     source_url TEXT,
 
@@ -17,8 +17,10 @@ CREATE TABLE IF NOT EXISTS public.deals (
 
     more_info_url TEXT,
     -- Parsed external link from "More info" / "Find out more" in the raw post
+
     image_url TEXT,
     -- Telegram post image URL when the post includes a photo
+
     time_text TEXT,
     -- Daily time window such as "2PM - 8PM" or "From 4PM"
 
@@ -60,11 +62,14 @@ CREATE TABLE IF NOT EXISTS public.deals (
     CONSTRAINT deals_source_hash_uniq
         UNIQUE (source_id, content_hash),
 
+    CONSTRAINT deals_date_validity_check
+        CHECK (start_date <= end_date),
+
     CONSTRAINT deals_price_level_check
         CHECK (price_level IS NULL OR price_level BETWEEN 0 AND 4),
 
     CONSTRAINT deals_location_mode_check
-        CHECK (location_mode IS NULL OR location_mode IN ('explicit', 'coverage', 'islandwide','hidden')),
+        CHECK (location_mode IS NULL OR location_mode IN ('explicit', 'coverage', 'islandwide', 'hidden')),
 
     CONSTRAINT deals_status_check
         CHECK (status IN ('active', 'expired'))
