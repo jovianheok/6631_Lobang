@@ -1,19 +1,5 @@
 """
-Purpose: Central store for regex patterns and shared constants
-"""
-
-r"""
-r"..."  : raw string literal
-\b      : word boundary
-\d      : a digit
-\d+     : one or more digits
-\s      : a whitespace character
-\s+     : one or more whitespace character
-\s?     : zero or one whitespace character
-\s*     : zero or more whitespace characters
-[ -]?   : an optional space or hyphen
-^:      : matches the start of the string (leading)
-$       : matches the end of the string (trailing)
+Purpose: Central store for regex patterns and shared parser constants.
 """
 
 # _1_classification.py
@@ -101,7 +87,7 @@ NON_MERCHANT_LOCATION_PHRASES = {
     "selected stores", "participating stores", "all locations",
 }
 
-# _4_extract_validity.py
+# _4_extract_date_validity.py
 MONTHS = {
     "jan": 1, "january": 1, "feb": 2, "february": 2, "mar": 3, "march": 3, "apr": 4, "april": 4, "may": 5, 
     "jun": 6, "june": 6, "jul": 7, "july": 7, "aug": 8, "august": 8, "sep": 9, "sept": 9, "september": 9,

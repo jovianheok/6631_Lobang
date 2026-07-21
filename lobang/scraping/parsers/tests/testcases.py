@@ -1,8 +1,8 @@
-from datetime import datetime, date
+from datetime import date, datetime
 
 TEST_CASES = [
-# Food deals
-{   "id": 1,
+    # Food deals
+    {   "id": 1,
     "raw_text": 
         """
         Gelato Messina: Free Extra Gelato Scoop 🍦
@@ -28,9 +28,9 @@ TEST_CASES = [
         "more_info_url": "https://tco.sg/MfR1Jdg7J",
         "time_text": "From 4PM",
         }
-},
+    },
 
-{   "id": 2,
+    {   "id": 2,
     "raw_text": 
         """
         Burger King: New Smoky Maple Mayo Burgers & Pocket Cameras 🍔
@@ -57,9 +57,9 @@ TEST_CASES = [
         "more_info_url": "https://tco.sg/bkjunxsgfd",
         "time_text": None,
         }
-},
+    },
 
-{   "id": 3,
+    {   "id": 3,
     "raw_text": 
         """
         Starbucks: 1-for-1 on any Venti drink 🥤
@@ -85,9 +85,9 @@ TEST_CASES = [
         "more_info_url": "https://tco.sg/mxtMUfZEQ",
         "time_text": "2PM - 8PM",
     },
-},
+    },
 
-{   "id": 4,
+    {   "id": 4,
     "raw_text": 
         """
         Yu Xia Ge: $1.80 Prawn Noodle 🍤
@@ -112,9 +112,9 @@ TEST_CASES = [
         "more_info_url": "https://tco.sg/CanMGCuXj",
         "time_text": None,
     },
-},
+    },
 
-{   "id": 5,
+    {   "id": 5,
     "raw_text": 
         """
         $1 Craze Hottis is back at 7-Eleven 🥳
@@ -138,10 +138,10 @@ TEST_CASES = [
         "more_info_url": "https://tco.sg/1uptkV70H",
         "time_text": None,
     },
-},
+    },
 
-# Non food deals
-{   "id": 6,
+    # Non-food deals
+    {   "id": 6,
     "raw_text": 
         """
         SG Friend Up: New Friend Circle Starts Here 👋
@@ -157,9 +157,9 @@ TEST_CASES = [
     "scraped_at": datetime.fromisoformat("2026-05-28T06:46:53.348082+00:00"),
     "expected": 
         {"is_food_deal": False}
-},
+    },
 
-{   "id": 7,
+    {   "id": 7,
     "raw_text": 
         """
         [GIVEAWAY] Win Handcrafted Artisanal Flavored Butters 🧈
@@ -179,9 +179,9 @@ TEST_CASES = [
     "scraped_at": datetime.fromisoformat("2026-05-28T06:46:53.348082+00:00"),
     "expected": 
         {"is_food_deal": False}
-},
+    },
 
-{   "id": 8,
+    {   "id": 8,
     "raw_text": 
         """
         Places to get Rice Dumplings for Dragon Boat Festival 🐉
@@ -198,9 +198,9 @@ TEST_CASES = [
     "scraped_at": datetime.fromisoformat("2026-05-28T06:46:53.348082+00:00"),
     "expected": 
         {"is_food_deal": False}
-},
+    },
 
-{   "id": 9,
+    {   "id": 9,
     "raw_text": 
         """
         GastroBeats 2026 Food Guide 🍩
@@ -217,9 +217,9 @@ TEST_CASES = [
     "scraped_at": datetime.fromisoformat("2026-05-28T06:46:53.348082+00:00"),
     "expected": 
         {"is_food_deal": False}
-},
+    },
 
-{   "id": 10,
+    {   "id": 10,
     "raw_text": 
         """
         5 Vietnamese Salt Coffee Spots in SG 🥤
@@ -236,6 +236,6 @@ TEST_CASES = [
     "scraped_at": datetime.fromisoformat("2026-05-28T06:46:53.348082+00:00"),
     "expected": 
         {"is_food_deal": False}
-},
+    },
 
 ]

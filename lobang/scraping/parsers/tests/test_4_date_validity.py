@@ -6,7 +6,7 @@ from .testcases import TEST_CASES
     "case",
     TEST_CASES,
 )
-def test_parse_raw_post(case: dict):
+def test_parse_raw_post_date_validity(case: dict):
     result = parse_raw_post(case)
     if case["expected"]["is_food_deal"]:
         assert result["start_date"] == case["expected"]["start_date"]
