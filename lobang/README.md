@@ -14,12 +14,14 @@ Lobang is a food-deal discovery app that collects promotions from Telegram posts
 ## How To Use
 
 1. Open the app and browse the latest active deals on the home page.
-2. Tap a deal card to review its details, including validity period, timing, location, and links.
+2. Open a deal card to review its details, including validity period, timing, location, and links.
 3. Use the save button to bookmark deals you want to keep.
 4. Sign in to vote on deals and improve community recommendations.
 5. Update your preferences in your profile to personalize your "For You" feed.
 
 ## Running Locally
+
+Run these commands from the `lobang/` directory.
 
 ### Frontend
 
@@ -53,3 +55,4 @@ python main.py
 
 - Some features, such as bookmarks, voting, and personalization, require signing in.
 - Deals are scraped and parsed from external sources, so displayed information depends on what is available in the original post.
+- For implementation details, see [docs/architecture.md](/Users/jovianheok/Desktop/orbital/6631_Lobang/lobang/docs/architecture.md).
