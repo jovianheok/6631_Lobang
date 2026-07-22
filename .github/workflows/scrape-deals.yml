@@ -1,0 +1,41 @@
+name: Scrape Deals
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every 6 hours at minute 17, Singapore time.
+    - cron: "17 */6 * * *"
+      timezone: "Asia/Singapore"
+
+concurrency:
+  group: scrape-deals
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lobang/scraping
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Playwright Chromium
+        run: python -m playwright install --with-deps chromium
+
+      - name: Run scraper and parser pipeline
+        run: python main.py
