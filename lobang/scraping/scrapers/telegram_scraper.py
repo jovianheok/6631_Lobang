@@ -15,14 +15,14 @@ def extract_post_image_url(post) -> str | None:
     """
     Purpose: Extract the most likely image URL from a Telegram post.
     """
-    photo_locator = post.locator(".tgme_widget_message_photo_wrap").first()
+    photo_locator = post.locator(".tgme_widget_message_photo_wrap").first
     if photo_locator.count():
         photo_style = photo_locator.get_attribute("style")
         image_url = extract_background_image_url(photo_style)
         if image_url:
             return image_url
 
-        img_locator = photo_locator.locator("img").first()
+        img_locator = photo_locator.locator("img").first
         if img_locator.count():
             for attr in ("src", "data-src"):
                 candidate = img_locator.get_attribute(attr)
