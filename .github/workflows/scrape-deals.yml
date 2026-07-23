@@ -3,8 +3,8 @@ name: Scrape Deals
 on:
   workflow_dispatch:
   schedule:
-    # Every 6 hours at minute 17, Singapore time.
-    - cron: "17 */6 * * *"
+    # Once daily at 09:17, Singapore time.
+    - cron: "17 9 * * *"
       timezone: "Asia/Singapore"
 
 concurrency:
