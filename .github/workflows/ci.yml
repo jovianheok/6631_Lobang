@@ -87,5 +87,13 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      # Placeholder NEXT_PUBLIC_* values so static prerendering can construct the
+      # Supabase client without throwing. These are build-time client vars only —
+      # the real values live in Vercel, which builds/deploys separately. This job
+      # only verifies the build compiles.
       - name: Build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://dummy.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy-anon-key-for-build-only
+          NEXT_PUBLIC_API_URL: https://dummy-api.example.com
         run: npm run build
