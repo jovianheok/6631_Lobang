@@ -30,6 +30,10 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Validate required secrets
+        run: |
+          test -n "$DATABASE_URL" || (echo "DATABASE_URL is missing" && exit 1)
+
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
