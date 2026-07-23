@@ -12,7 +12,11 @@ INSERT INTO raw_deals (
     scraped_at
 )
 VALUES (%s, %s, %s, %s, %s, now())
-ON CONFLICT (source_id, content_hash) DO NOTHING
+ON CONFLICT (source_id, content_hash) DO UPDATE SET
+    source_url = EXCLUDED.source_url,
+    raw_text = EXCLUDED.raw_text,
+    raw_payload = EXCLUDED.raw_payload,
+    scraped_at = NOW()
 RETURNING id;
 """
 
@@ -52,7 +56,29 @@ INSERT INTO deals (
     status
 )
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-ON CONFLICT (source_id, content_hash) DO NOTHING
+ON CONFLICT (source_id, content_hash) DO UPDATE SET
+    more_info_url = COALESCE(deals.more_info_url, EXCLUDED.more_info_url),
+    image_url = COALESCE(EXCLUDED.image_url, deals.image_url),
+    time_text = COALESCE(deals.time_text, EXCLUDED.time_text),
+    source_url = COALESCE(deals.source_url, EXCLUDED.source_url),
+    title = COALESCE(deals.title, EXCLUDED.title),
+    merchant_name = COALESCE(deals.merchant_name, EXCLUDED.merchant_name),
+    start_date = COALESCE(deals.start_date, EXCLUDED.start_date),
+    end_date = COALESCE(deals.end_date, EXCLUDED.end_date),
+    cuisine = COALESCE(deals.cuisine, EXCLUDED.cuisine),
+    price_level = COALESCE(deals.price_level, EXCLUDED.price_level),
+    address = COALESCE(deals.address, EXCLUDED.address),
+    outlet_count = CASE
+        WHEN deals.outlet_count = 0 THEN EXCLUDED.outlet_count
+        ELSE deals.outlet_count
+    END,
+    covered_regions = CASE
+        WHEN COALESCE(array_length(deals.covered_regions, 1), 0) = 0 THEN EXCLUDED.covered_regions
+        ELSE deals.covered_regions
+    END,
+    location_text = COALESCE(deals.location_text, EXCLUDED.location_text),
+    display_location = COALESCE(deals.display_location, EXCLUDED.display_location),
+    location_mode = COALESCE(deals.location_mode, EXCLUDED.location_mode)
 RETURNING id;
 """
 
