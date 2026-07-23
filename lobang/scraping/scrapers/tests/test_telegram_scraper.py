@@ -1,4 +1,4 @@
-from ..image_utils import extract_background_image_url
+from scrapers.image_utils import extract_background_image_url
 
 
 def test_extract_background_image_url_standard_style():
