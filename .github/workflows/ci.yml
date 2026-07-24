@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+# Cancel superseded runs on the same ref (e.g. rapid pushes to a PR branch).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scraping-tests:
+    name: Scraping tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lobang/scraping
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: lobang/scraping/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # No GOOGLE_PLACES_API_KEY / DATABASE_URL: the suite is hermetic (Places is
+      # forced offline in conftest.py) so it needs no secrets and hits no network.
+      - name: Run pytest
+        run: pytest
+
+  backend-tests:
+    name: Backend tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lobang/apps/backend
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            lobang/apps/backend/requirements.txt
+            lobang/apps/backend/requirements-dev.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r requirements-dev.txt
+
+      # Auth/DB are mocked in tests; conftest sets dummy SUPABASE_URL/DATABASE_URL
+      # so the app imports without a real Supabase project or database.
+      - name: Run pytest
+        run: pytest
+
+  frontend:
+    name: Frontend lint, test & build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lobang/apps/frontend
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: lobang/apps/frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test
+
+      # Placeholder NEXT_PUBLIC_* values so static prerendering can construct the
+      # Supabase client without throwing. These are build-time client vars only —
+      # the real values live in Vercel, which builds/deploys separately. This job
+      # only verifies the build compiles.
+      - name: Build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://dummy.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: dummy-anon-key-for-build-only
+          NEXT_PUBLIC_API_URL: https://dummy-api.example.com
+        run: npm run build
