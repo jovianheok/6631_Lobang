@@ -1,0 +1,6 @@
+# Test-only dependencies. Kept out of requirements.txt so the deployed Render
+# image stays lean. Install locally / in CI with:
+#   pip install -r requirements.txt -r requirements-dev.txt
+pytest==9.1.0
+httpx==0.28.1        # required by Starlette's TestClient
+pytest-cov==6.0.0
