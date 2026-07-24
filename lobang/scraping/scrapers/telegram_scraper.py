@@ -2,7 +2,7 @@
 Purpose: Turn a webpage into a list of Python dictionaries which stores raw posts
 """
 
-from playwright.sync_api import sync_playwright     # import Playwright to control a browser synchronously
+from playwright.sync_api import Locator, sync_playwright     # import Playwright to control a browser synchronously
 
 import hashlib      # import Python’s hashing library to create a unique fingerprint for each post
 
@@ -11,25 +11,34 @@ from .image_utils import extract_background_image_url
 CHANNEL_URL = "https://t.me/s/sgfooddeals"      # Telegram channel page that we want to scrape          
 
 
-def extract_post_image_url(post) -> str | None:
+def _read_photo_locator(photo_locator: Locator) -> str | None:
+    """
+    Read the best available image URL from a Telegram photo wrapper.
+    """
+    photo_style = photo_locator.get_attribute("style")
+    image_url = extract_background_image_url(photo_style)
+    if image_url:
+        return image_url
+
+    img_locator = photo_locator.locator("img").first
+    if img_locator.count():
+        for attr in ("src", "data-src"):
+            candidate = img_locator.get_attribute(attr)
+            if candidate:
+                return candidate.strip()
+
+    return None
+
+
+def extract_post_image_url(post: Locator) -> str | None:
     """
     Purpose: Extract the most likely image URL from a Telegram post.
     """
     photo_locator = post.locator(".tgme_widget_message_photo_wrap").first
-    if photo_locator.count():
-        photo_style = photo_locator.get_attribute("style")
-        image_url = extract_background_image_url(photo_style)
-        if image_url:
-            return image_url
+    if not photo_locator.count():
+        return None
 
-        img_locator = photo_locator.locator("img").first
-        if img_locator.count():
-            for attr in ("src", "data-src"):
-                candidate = img_locator.get_attribute(attr)
-                if candidate:
-                    return candidate.strip()
-
-    return None
+    return _read_photo_locator(photo_locator)
 
 def make_content_hash(text: str, post_url: str) -> str:
     """
@@ -61,6 +70,11 @@ def scrape_telegram_channel():
                 post = posts.nth(i)                           
                 text_locator = post.locator(".tgme_widget_message_text")        # Find the text element
                 date_locator = post.locator("a.tgme_widget_message_date")       # Find the date element
+
+                # Telegram lazily loads media for off-screen posts, so scroll each
+                # card into view before reading photo attributes.
+                post.scroll_into_view_if_needed()
+                page.wait_for_timeout(150)
 
                 text = text_locator.inner_text().strip() if text_locator.count() else ""        # Extract text and remove extra spaces/newlines if text element exists
                 
