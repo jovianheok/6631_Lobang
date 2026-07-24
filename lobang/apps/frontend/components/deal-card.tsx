@@ -111,6 +111,7 @@ export default function DealCard({
       : end_date
       ? `Valid until ${end_date}`
       : null;
+  const primarySourceUrl = more_info_url ?? source_url;
   const [voteState, setVoteState] = useState({
     upvoteCount: upvote_count,
     downvoteCount: downvote_count,
@@ -315,28 +316,16 @@ export default function DealCard({
       </div>
 
       {/* External links */}
-      {source_url || more_info_url ? (
+      {primarySourceUrl ? (
         <div className="mt-4 flex flex-wrap gap-4">
-          {source_url ? (
-            <a
-              href={source_url}
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm font-medium text-blue-600 hover:underline"
-            >
-              View source
-            </a>
-          ) : null}
-          {more_info_url ? (
-            <a
-              href={more_info_url}
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm font-medium text-blue-600 hover:underline"
-            >
-              More info
-            </a>
-          ) : null}
+          <a
+            href={primarySourceUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm font-medium text-blue-600 hover:underline"
+          >
+            View source
+          </a>
         </div>
       ) : null}
     </article>
