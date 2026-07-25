@@ -5,6 +5,21 @@ import { supabase } from "@/lib/supabase";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
+function normalizeImageUrl(imageUrl: string | null): string | null {
+  if (!imageUrl) return null;
+  if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+    return imageUrl;
+  }
+  return `${API_BASE_URL}${imageUrl}`;
+}
+
+function normalizeDeal(deal: Deal): Deal {
+  return {
+    ...deal,
+    image_url: normalizeImageUrl(deal.image_url),
+  };
+}
+
 // Build the Authorization header from the current Supabase session. Throws if the
 // user isn't signed in, so callers can redirect to /login.
 async function authHeaders(): Promise<Record<string, string>> {
@@ -79,7 +94,7 @@ export async function getDeals(): Promise<Deal[]> {
     throw new Error("Failed to fetch deals");
   }
 
-  return response.json();                           // Converts JSON into JavaScript objects
+  return (await response.json()).map(normalizeDeal);                           // Converts JSON into JavaScript objects
 }
 
 // Personalized, preference-ranked deals for the signed-in user. Requires auth.
@@ -92,7 +107,7 @@ export async function getForYouDeals(): Promise<Deal[]> {
     throw new Error("Failed to fetch For You deals");
   }
 
-  return response.json();
+  return (await response.json()).map(normalizeDeal);
 }
 
 // --- Bookmarks ---------------------------------------------------------------
@@ -107,7 +122,7 @@ export async function getBookmarks(): Promise<Deal[]> {
     throw new Error("Failed to fetch bookmarks");
   }
 
-  return response.json();
+  return (await response.json()).map(normalizeDeal);
 }
 
 // Save a deal for the current user. Backend treats a repeat save as a no-op.

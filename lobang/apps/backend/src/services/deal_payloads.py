@@ -23,6 +23,13 @@ def build_deal_payload(
     """
     deal_id = row[0]
     vote_data = (vote_counts or {}).get(deal_id, DEFAULT_VOTE_DATA)
+    stored_image_url = row[5]
+    raw_post_url = row[14] if len(row) > 14 else None
+    image_url = (
+        f"/api/v1/deals/{deal_id}/image"
+        if stored_image_url or raw_post_url
+        else None
+    )
 
     return {
         "id": deal_id,
@@ -30,7 +37,7 @@ def build_deal_payload(
         "merchant_name": row[2],
         "source_url": row[3],
         "more_info_url": row[4],
-        "image_url": row[5],
+        "image_url": image_url,
         "time_text": row[6],
         "start_date": row[7],
         "end_date": row[8],

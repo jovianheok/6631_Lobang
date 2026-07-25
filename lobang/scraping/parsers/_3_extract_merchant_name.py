@@ -5,7 +5,12 @@ Purpose: Extract, clean, and validate merchant names from Telegram posts using d
 import re
 from typing import Optional
 
-from .patterns import GENERIC_PROMO_WORDS, AT_PATTERNS, NON_MERCHANT_LOCATION_PHRASES
+from .patterns import (
+    GENERIC_PROMO_WORDS,
+    AT_PATTERNS,
+    MERCHANT_LEAD_PATTERNS,
+    NON_MERCHANT_LOCATION_PHRASES,
+)
 from .utils import clean_line
 
 def extract_merchant_name(text: str, title: str) -> Optional[str]:
@@ -24,6 +29,11 @@ def extract_merchant_name(text: str, title: str) -> Optional[str]:
 
     # 3) Fallback: body contains "at Merchant"
     candidate = extract_merchant_from_at_pattern(text)
+    if candidate:
+        return candidate
+
+    # 4) Fallback: title begins with merchant name before offer wording.
+    candidate = extract_merchant_from_title_lead(title)
     if candidate:
         return candidate
 
@@ -47,6 +57,22 @@ def extract_merchant_from_at_pattern(content: str) -> Optional[str]:
     """
     for pattern in AT_PATTERNS:
         match = re.search(pattern, content, flags=re.IGNORECASE)
+        if not match:
+            continue
+
+        candidate = validate_merchant_candidate(match.group(1))
+        if candidate:
+            return candidate
+
+    return None
+
+
+def extract_merchant_from_title_lead(title: str) -> Optional[str]:
+    """
+    Purpose: Attempt to extract a leading merchant name from titles without a colon.
+    """
+    for pattern in MERCHANT_LEAD_PATTERNS:
+        match = re.search(pattern, title, flags=re.IGNORECASE)
         if not match:
             continue
 
@@ -87,4 +113,3 @@ def validate_merchant_candidate(candidate: Optional[str]) -> Optional[str]:
 
     return candidate
     
-

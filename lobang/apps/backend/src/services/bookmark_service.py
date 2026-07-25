@@ -53,7 +53,7 @@ def get_bookmarked_deals(user_id: str) -> list[dict[str, Any]]:
                     d.merchant_name,
                     d.source_url,
                     d.more_info_url,
-                    d.image_url,
+                    COALESCE(d.image_url, rd.raw_payload->>'image_url') AS image_url,
                     d.time_text,
                     d.start_date,
                     d.end_date,
@@ -61,9 +61,11 @@ def get_bookmarked_deals(user_id: str) -> list[dict[str, Any]]:
                     d.price_level,
                     d.address,
                     d.covered_regions,
-                    d.display_location
+                    d.display_location,
+                    rd.raw_payload->>'post_url' AS raw_post_url
                 FROM public.bookmarks b
                 JOIN public.deals d ON d.id = b.deal_id
+                LEFT JOIN public.raw_deals rd ON rd.id = d.raw_deal_id
                 WHERE b.user_id = %s
                 ORDER BY b.created_at DESC;
                 """,
