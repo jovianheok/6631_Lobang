@@ -70,6 +70,15 @@ NEGATIVE_PATTERNS = [
 
     # Giveaways
     r"\bgiveaway\b", r"\bcontest\b", r"\blucky winner(s)?\b", r"\bwin\b", r"\bstand to win\b",
+
+    # Non-ready-to-eat / grocery-style food content
+    r"\bfrozen\b", r"\bfrozen food\b", r"\bready[- ]to[- ]cook\b", r"\buncooked\b",
+    r"\bfair sale\b", r"\bwarehouse sale\b",
+
+    # Supplements / health products
+    r"\bsupplement(s)?\b", r"\bvitamin(s)?\b", r"\bmultivitamin(s)?\b", r"\bprobiotic(s)?\b",
+    r"\bcollagen\b", r"\bfish oil\b", r"\bprotein powder\b", r"\bwhey protein\b",
+    r"\bcapsule(s)?\b", r"\btablet(s)?\b", r"\biherb\b",
 ]
 
 # _3_extract_merchant.py
@@ -78,14 +87,18 @@ GENERIC_PROMO_WORDS = {
 }
 
 AT_PATTERNS = [
-    r"\bback at\s+([A-Za-z0-9&'\- ]+)", r"\bavailable at\s+([A-Za-z0-9&'\- ]+)", r"\bonly at\s+([A-Za-z0-9&'\- ]+)",
-    r"\bexclusively at\s+([A-Za-z0-9&'\- ]+)",
+    r"\bback at\s+([A-Za-z0-9&'’\- ]+)", r"\bavailable at\s+([A-Za-z0-9&'’\- ]+)", r"\bonly at\s+([A-Za-z0-9&'’\- ]+)",
+    r"\bexclusively at\s+([A-Za-z0-9&'’\- ]+)",
 ]
 
 NON_MERCHANT_LOCATION_PHRASES = {
     "all outlets", "selected outlets", "participating outlets", "all stores",
     "selected stores", "participating stores", "all locations",
 }
+
+MERCHANT_LEAD_PATTERNS = [
+    r"^([A-Z][A-Za-z0-9&'’\-]*(?:\s+[A-Z][A-Za-z0-9&'’\-]*)*)\s+(?:1\s*[- ]?\s*for\s*[- ]?\s*1|buy\s*1\s*get\s*1|\d{1,3}%\s*off|\$(?:\d+(?:\.\d{1,2})?)|free\b)",
+]
 
 # _4_extract_date_validity.py
 MONTHS = {

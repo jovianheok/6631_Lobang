@@ -188,12 +188,14 @@ export default function DealCard({
         <div>
 
           {/* Merchant name: primary heading, most prominent element */}
-          <h2 className="text-xl font-bold tracking-tight text-gray-900">
-            {merchant_name ?? "Unknown merchant"}
-          </h2>
+          {merchant_name ? (
+            <h2 className="text-xl font-bold tracking-tight text-gray-900">
+              {merchant_name}
+            </h2>
+          ) : null}
 
           {/* Deal title: supporting line under the merchant */}
-          <p className="mt-1 text-base font-medium text-gray-700">
+          <p className={`${merchant_name ? "mt-1" : ""} text-base font-medium text-gray-700`}>
             {displayTitle}
           </p>
         </div>

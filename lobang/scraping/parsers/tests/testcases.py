@@ -238,4 +238,75 @@ TEST_CASES = [
         {"is_food_deal": False}
     },
 
+    {   "id": 11,
+    "raw_text":
+        """
+        CB Brand: Mega Frozen Food Sale from $1
+
+        🔹 Stock up on frozen dumplings, nuggets and ready-to-cook items
+        🔹 While stocks last
+        📅 Now till 31 Jul
+
+        @sgfooddeals
+        """,
+    "scraped_at": datetime.fromisoformat("2026-07-22T06:46:53.348082+00:00"),
+    "expected":
+        {"is_food_deal": False}
+    },
+
+    {   "id": 12,
+    "raw_text":
+        """
+        $2 Wagyu Beef Fair Sale
+
+        🔹 Grab discounted wagyu cuts while stocks last
+        🔹 Frozen packs available for takeaway
+        📅 Now till 16 Aug
+
+        @sgfooddeals
+        """,
+    "scraped_at": datetime.fromisoformat("2026-07-22T06:46:53.348082+00:00"),
+    "expected":
+        {"is_food_deal": False}
+    },
+
+    {   "id": 13,
+    "raw_text":
+        """
+        Score healthy food deals on iHerb
+
+        🔹 Save on vitamins, supplements and wellness essentials
+        📅 Now till 30 Sep
+
+        @sgfooddeals
+        """,
+    "scraped_at": datetime.fromisoformat("2026-07-22T06:46:53.348082+00:00"),
+    "expected":
+        {"is_food_deal": False}
+    },
+
+    {   "id": 14,
+    "raw_text":
+        """
+        Morganfield’s 1-for-1 Burgers at Suntec City
+
+        🔹 Buy one burger and get one free for dine-in
+        📅 5 Jul - 12 Jul
+        📍 Suntec City
+
+        @sgfooddeals
+        """,
+    "scraped_at": datetime.fromisoformat("2026-07-01T06:46:53.348082+00:00"),
+    "expected":
+        {
+        "is_food_deal": True,
+        "title": "Morganfield’s 1-for-1 Burgers at Suntec City",
+        "merchant_name": "Morganfield’s",
+        "start_date": date(2026, 7, 5),
+        "end_date": date(2026, 7, 12),
+        "more_info_url": None,
+        "time_text": None,
+        }
+    },
+
 ]
