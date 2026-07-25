@@ -171,7 +171,7 @@ export async function getPreferences(): Promise<Preferences> {
     throw new Error("Failed to fetch preferences");
   }
 
-  return (await response.json()).map(normalizeDeal);
+  return response.json();
 }
 
 export async function updatePreferences(
@@ -187,7 +187,7 @@ export async function updatePreferences(
     throw new Error("Failed to update preferences");
   }
 
-  return normalizeDeal(await response.json());
+  return response.json();
 }
 
 export async function setDealVote(
