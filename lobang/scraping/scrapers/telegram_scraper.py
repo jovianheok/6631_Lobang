@@ -2,13 +2,18 @@
 Purpose: Turn a webpage into a list of Python dictionaries which stores raw posts
 """
 
-from playwright.sync_api import Locator, sync_playwright     # import Playwright to control a browser synchronously
-
 import hashlib      # import Python’s hashing library to create a unique fingerprint for each post
+from urllib.parse import urlparse
+
+from playwright.sync_api import Locator, sync_playwright     # import Playwright to control a browser synchronously
 
 from .image_utils import extract_background_image_url
 
 CHANNEL_URL = "https://t.me/s/sgfooddeals"      # Telegram channel page that we want to scrape          
+MAX_POSTS = 50
+SCROLL_STEP_PX = 5000
+SCROLL_WAIT_MS = 1200
+MAX_STABLE_SCROLLS = 3
 
 
 def _read_photo_locator(photo_locator: Locator) -> str | None:
@@ -40,6 +45,44 @@ def extract_post_image_url(post: Locator) -> str | None:
 
     return _read_photo_locator(photo_locator)
 
+
+def extract_post_id(post_url: str | None) -> int:
+    """
+    Purpose: Extract Telegram's numeric message id from a post URL.
+    """
+    if not post_url:
+        return -1
+
+    path_parts = [part for part in urlparse(post_url).path.split("/") if part]
+    if not path_parts:
+        return -1
+
+    try:
+        return int(path_parts[-1])
+    except ValueError:
+        return -1
+
+
+def load_more_posts(page, posts: Locator, max_posts: int):
+    """
+    Purpose: Scroll until Telegram has loaded enough posts or stops loading more.
+    """
+    stable_scrolls = 0
+    previous_count = posts.count()
+
+    while previous_count < max_posts and stable_scrolls < MAX_STABLE_SCROLLS:
+        page.mouse.wheel(0, SCROLL_STEP_PX)
+        page.wait_for_timeout(SCROLL_WAIT_MS)
+
+        current_count = posts.count()
+        if current_count > previous_count:
+            previous_count = current_count
+            stable_scrolls = 0
+            continue
+
+        stable_scrolls += 1
+
+
 def make_content_hash(text: str, post_url: str) -> str:
     """
     Purpose: Create a unique hash from post text and post URL to detect duplicate posts
@@ -48,7 +91,7 @@ def make_content_hash(text: str, post_url: str) -> str:
     return hashlib.sha256(base.encode("utf-8")).hexdigest()     # Convert string into a SHA-256 hash and return it as a hex string
 
 
-def scrape_telegram_channel():
+def scrape_telegram_channel(max_posts: int = MAX_POSTS):
     """
     Use Playwright to scrape text posts from a Telegram channel and return them as a list of structured dictionaries
     # """
@@ -64,6 +107,7 @@ def scrape_telegram_channel():
             page.wait_for_timeout(2000)     # Give dynamic content more time to render
 
             posts = page.locator("div.tgme_widget_message")     # Find all Telegram post elements on the page
+            load_more_posts(page, posts, max_posts)
             
             count = posts.count()
             for i in range(count):                             
@@ -93,6 +137,9 @@ def scrape_telegram_channel():
                     "image_url": image_url,
                     "content_hash": make_content_hash(text, post_url),
                 })
+
+            raw_posts.sort(key=lambda post: extract_post_id(post.get("post_url")), reverse=True)
+            raw_posts = raw_posts[:max_posts]
 
         finally:                                                    
             if browser:
