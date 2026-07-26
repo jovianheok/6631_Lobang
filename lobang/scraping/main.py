@@ -19,6 +19,21 @@ def main():
         parsed_deals = [parse_raw_post(row) for row in rows]
         print(f"Parsed {len(parsed_deals)} deals")
 
+        # Places enrichment failing (missing key, exhausted quota) is swallowed per
+        # deal, and unenriched deals match no filter and score 0 in For You. Say so
+        # loudly instead of letting a whole batch land empty.
+        with_merchant = [deal for deal in parsed_deals if deal and deal.get("merchant_name")]
+        enriched = [
+            deal for deal in with_merchant
+            if deal.get("cuisine") or deal.get("price_level") is not None or deal.get("address")
+        ]
+        if with_merchant and not enriched:
+            print(
+                "WARNING: none of the deals got Google Places enrichment. Check "
+                "GOOGLE_PLACES_API_KEY and the Places quota, then run "
+                "backfill_enrichment.py to fill the columns in."
+            )
+
         inserted_parsed_deal_ids = save_parsed_deals(parsed_deals, source_id=1)     # Save parsed deals to database
         print(f"Inserted {len(inserted_parsed_deal_ids)} parsed deals")
 

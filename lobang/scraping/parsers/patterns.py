@@ -120,6 +120,11 @@ LOCATION_HINT_PATTERNS = [
 ]
 
 # _6_extract_place_info.py
+# Google place types -> our cuisine labels. extract_cuisine walks a place's types
+# in Google's own order and takes the first match, so specific types (listed as a
+# place's primary type) win over the broad "Asian"/"Western" fallbacks below.
+# Keep the labels in sync with CUISINE_GROUPS in apps/frontend/lib/constants.ts —
+# a label missing there can never be filtered on or saved as a preference.
 CUISINE_TYPE_MAP = {
     "chinese_restaurant": "Chinese", "japanese_restaurant": "Japanese", "korean_restaurant": "Korean",
     "indian_restaurant": "Indian", "thai_restaurant": "Thai", "italian_restaurant": "Italian",
@@ -129,8 +134,21 @@ CUISINE_TYPE_MAP = {
     "vietnamese_restaurant": "Vietnamese", "indonesian_restaurant": "Indonesian",
     "malaysian_restaurant": "Malaysian", "ramen_restaurant": "Ramen", "sushi_restaurant": "Sushi",
     "pizza_restaurant": "Pizza", "hamburger_restaurant": "Burgers", "sandwich_shop": "Sandwiches",
-    "bakery": "Bakery", "cafe": "Cafe", "bar": "Bar", "ice_cream_shop": "Ice Cream", 
+    "bakery": "Bakery", "cafe": "Cafe", "bar": "Bar", "ice_cream_shop": "Ice Cream",
     "bubble_tea_store": "Bubble Tea",
+
+    # Additional specific types Google returns for Singapore F&B.
+    "steak_house": "Steakhouse", "barbecue_restaurant": "Barbecue",
+    "fast_food_restaurant": "Fast Food", "buffet_restaurant": "Buffet",
+    "dessert_shop": "Desserts", "dessert_restaurant": "Desserts", "confectionery": "Desserts",
+    "chocolate_shop": "Desserts", "candy_store": "Desserts",
+    "coffee_shop": "Cafe", "tea_house": "Cafe", "breakfast_restaurant": "Cafe",
+    "brunch_restaurant": "Cafe", "cake_shop": "Bakery", "donut_shop": "Bakery",
+    "bagel_shop": "Bakery", "pub": "Bar", "wine_bar": "Bar", "bar_and_grill": "Bar",
+
+    # Broad fallbacks: only reached when a place has no more specific food type.
+    "asian_restaurant": "Asian", "asian_fusion_restaurant": "Asian",
+    "western_restaurant": "Western", "european_restaurant": "Western",
 }
 
 PRICE_LEVEL_MAP = {
